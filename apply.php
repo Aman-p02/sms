@@ -2,7 +2,11 @@
     include "db.php";
 
 
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.gc_maxlifetime', 2592000);
+    session_set_cookie_params(2592000);
     session_start();
+}
 
     // Prevent browser caching
     header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
