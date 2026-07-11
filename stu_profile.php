@@ -337,7 +337,72 @@ $complete = $row5['complete'];
             <?php
                 if($complete == 'No')
                 {
-                    echo '<div style="color: red;">Your Profile is Incomplete. You can not apply for any scholarship. To enable other options, fill all the details as asked </div>';
+                    $required_fields = [
+                        'stu_fname' => 'First Name',
+                        'stu_lname' => 'Last Name',
+                        'stu_ext' => 'Extension Name',
+                        'stu_mname' => 'Middle Name',
+                        'stu_gender' => 'Gender',
+                        'stu_dob' => 'Date of Birth',
+                        'stu_email' => 'Email Address',
+                        'stu_contact' => 'Contact Number',
+                        'stu_campus' => 'Campus',
+                        'stu_college' => 'College',
+                        'stu_program' => 'Course/Program',
+                        'stu_units' => 'Number of Units',
+                        'stu_year_level' => 'Year Level',
+                        'stu_grade' => 'GWA',
+                        'stu_gpa' => 'GPA',
+                        'stu_adm_year' => 'Admission Year',
+                        'stu_sem' => 'Semester',
+                        'father_lname' => 'Father\'s Last Name',
+                        'father_gname' => 'Father\'s Given Name',
+                        'father_mname' => 'Father\'s Middle Name',
+                        'mother_lname' => 'Mother\'s Last Name',
+                        'mother_gname' => 'Mother\'s Given Name',
+                        'mother_mname' => 'Mother\'s Middle Name',
+                        'stu_dswd' => 'DSWD Household',
+                        'stu_house' => 'Household per Capita Income',
+                        'stu_bci' => 'Barangay Certificate of Indigency',
+                        'stu_amount' => 'Expected Amount',
+                        'stu_disabled' => 'Person with Disability',
+                        'stu_marital' => 'Marital Status',
+                        'stu_dependent' => 'Dependent of Solo Parent',
+                        'stu_inmate' => 'Inmate / Detainee',
+                        'stu_rebel' => 'Former Rebel / Dependent',
+                        'stu_street' => 'Street / Purok',
+                        'stu_barangay' => 'Barangay',
+                        'stu_city' => 'City',
+                        'stu_province' => 'Province',
+                        'stu_zip' => 'Zip Code',
+                        'stu_perc' => 'Percentage'
+                    ];
+                    
+                    $missing_fields = [];
+                    foreach ($required_fields as $key => $label) {
+                        if (empty(trim($user[$key] ?? ''))) {
+                            $missing_fields[] = $label;
+                        }
+                    }
+            ?>
+                    <div class="alert alert-danger shadow-sm border-0 rounded-4 p-4 mt-3 mb-4">
+                        <h5 class="fw-bold mb-2 text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Your Profile is Incomplete</h5>
+                        <p class="mb-3 text-dark">You cannot apply for any scholarship until your profile is complete. Please fill in the missing details below:</p>
+                        <?php if (!empty($missing_fields)) { ?>
+                            <div class="row">
+                                <?php foreach (array_chunk($missing_fields, ceil(count($missing_fields) / 3) ?: 1) as $column): ?>
+                                    <div class="col-md-4">
+                                        <ul class="mb-0 text-danger small fw-medium" style="list-style-type: square; line-height: 1.8;">
+                                            <?php foreach ($column as $field): ?>
+                                                <li><?php echo htmlspecialchars($field); ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+            <?php
                 }
             ?>
             <!-- SECTION: EDIT PROFILE -->
