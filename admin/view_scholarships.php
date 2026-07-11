@@ -149,7 +149,7 @@ $result = $conn->query($sql);
         <tr>
             <td><?php echo $row['ss_year']; ?></td>            
             <td><a href="list_names.php?ss_id=<?php echo $row['ss_id']; ?>&ss_name=<?php echo $row['ss_name']; ?>"><?php echo $row['ss_name']; ?></a></td>
-            <td><a href="list_type.php?ss_id=<?php echo $row['ss_type']; ?>"><?php echo $row['ss_type']; ?></a></td>
+            <td><a href="list_type.php?ss_type=<?php echo urlencode($row['ss_type']); ?>"><?php echo $row['ss_type']; ?></a></td>
             <td><?php echo $row['ss_start']; ?></td>
             <td><?php echo $row['ss_end']; ?></td>
             <td><?php echo $row['ss_amount']; ?></td>
