@@ -90,15 +90,6 @@ $stu_fname = $_SESSION['stu_fname'];
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="card shadow card-custom">
-                        <div class="card-body text-center">
-                            <h5>Track Status</h5>
-                            <p>View application progress</p>
-                            <a href="#trackStatus" class="btn btn-warning btn-sm">Track</a>
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
@@ -167,65 +158,6 @@ $stu_fname = $_SESSION['stu_fname'];
 
                         <button class="btn btn-success">Submit Application</button>
                     </form>
-                </div>
-            </div>
-
-            <!-- SECTION: TRACK STATUS -->
-            <div id="trackStatus" class="mt-5">
-                <h4>Track Scholarship Status</h4>
-                <div class="card p-3 shadow card-custom">
-                    <table class="table table-bordered">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Scholarship Name</th>
-                                <th>Date Applied</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Merit-based</td>
-                                <td>10-Nov-2025</td>
-                                <td><span class="badge bg-warning">Under Review</span></td>
-                            </tr>
-                            <tr>
-                                <td>Minority</td>
-                                <td>05-Oct-2025</td>
-                                <td><span class="badge bg-success">Approved</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SECTION: PAST SCHOLARSHIP -->
-            <div id="pastScholarship" class="mt-5">
-                <h4>Past Scholarship Records</h4>
-                <div class="card p-3 shadow card-custom">
-                    <table class="table table-striped">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Scholarship</th>
-                                <th>Year</th>
-                                <th>Amount</th>
-                                <th>Remark</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Merit Scholarship</td>
-                                <td>2023</td>
-                                <td>₹25,000</td>
-                                <td>Completed</td>
-                            </tr>
-                            <tr>
-                                <td>Need-based Aid</td>
-                                <td>2022</td>
-                                <td>₹18,000</td>
-                                <td>Completed</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 

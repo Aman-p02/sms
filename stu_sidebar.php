@@ -55,8 +55,6 @@ $complete = $row['complete'];
             {
             ?>
             <a href="apply_scholarship.php">Apply Scholarship</a>
-            <a href="#trackStatus">Track Scholarship Status</a>
-            <a href="#pastScholarship">Past Scholarship Records</a>
             <a href="#postScholarship">Post-Scholarship Operations</a>
             <a href="stu_changePassword.php">Change Password</a>
             <a href="stu_feedback.php">Feedback</a>
