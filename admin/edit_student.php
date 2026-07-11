@@ -438,7 +438,7 @@ $user = $result->fetch_assoc();
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Admission Year</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name = "stu_year" disabled value="<?php echo $user['stu_year']; ?>">
+                                    <input type="text" class="form-control" name = "stu_year" disabled value="<?php echo $user['stu_year'] ?? ''; ?>">
                                 </div>
                                 </div>
                             </div>
@@ -447,7 +447,7 @@ $user = $result->fetch_assoc();
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Discipline / Program / Branch</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name = "stu_branch" disabled value="<?php echo $user['stu_branch']; ?>">
+                                    <input type="text" class="form-control" name = "stu_branch" disabled value="<?php echo $user['stu_branch'] ?? ''; ?>">
                                 </div>
                                 </div>
                             </div>
