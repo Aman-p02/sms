@@ -56,7 +56,7 @@ if (empty($ss_id)) {
 
 /*INNER JOIN*/
 
-$sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
+$sql = "SELECT scholarship.ss_id, student_master.stu_enroll, student_master.stu_id, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
 FROM scholarship
 INNER JOIN student_master ON scholarship.stu_id=student_master.stu_id 
 INNER JOIN ss_master ON scholarship.ss_id=ss_master.ss_id
@@ -133,6 +133,7 @@ $result = $conn->query($sql);
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
+            <th>Enrollment No</th>
             <th>Student Name</th>
             <th>Gender</th>
             <th>Year</th>
@@ -149,6 +150,7 @@ $result = $conn->query($sql);
             while ($row = $result->fetch_assoc()) {
         ?>
         <tr>
+            <td><?php echo htmlspecialchars($row['stu_enroll']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
             <td><?php 
                 if ($row['stu_gender'] == 'M') echo 'Male';
@@ -185,7 +187,7 @@ $result = $conn->query($sql);
         <?php
             }
         } else {
-            echo "<tr><td colspan='6' class='text-center'>No records found</td></tr>";
+            echo "<tr><td colspan='8' class='text-center'>No records found</td></tr>";
         }
         ?>
     </tbody>
