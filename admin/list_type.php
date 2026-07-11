@@ -182,6 +182,7 @@ $result = $conn->query($sql);
         </div>
         <div class="col-md-3 d-flex gap-1">
             <button type="submit" class="btn btn-primary w-50">Filter</button>
+            <a href="export.php?type=list_type&ss_type=<?php echo urlencode($ss_type); ?>&enroll=<?php echo urlencode($enroll_filter); ?>&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&campus=<?php echo urlencode($campus_filter); ?>&college=<?php echo urlencode($college_filter); ?>&year=<?php echo urlencode($year_filter); ?>&gender=<?php echo urlencode($gender_filter); ?>" class="btn btn-success w-50">Export</a>
         </div>
     </div>
 </form>

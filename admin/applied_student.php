@@ -5,7 +5,7 @@ include "../db.php";
 $ss_id_filter = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
 
 // Fetch all active scholarships for the dropdown
-$scholarships = $conn->query("SELECT ss_id, ss_name FROM ss_master ORDER BY ss_name ASC");
+$scholarships = $conn->query("SELECT ss_id, ss_name, ss_year FROM ss_master ORDER BY ss_name ASC, ss_year DESC");
 
 // Fetch applied students based on filter
 $sql = "SELECT s.app_status, stu.stu_fname, stu.stu_lname, stu.stu_email, stu.stu_program, ss.ss_name 
@@ -48,11 +48,12 @@ $result = $conn->query($sql);
                         <option value="">All Scholarships</option>
                         <?php while($ss = $scholarships->fetch_assoc()): ?>
                             <option value="<?php echo htmlspecialchars($ss['ss_id']); ?>" <?php echo ($ss_id_filter == $ss['ss_id']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($ss['ss_name']); ?>
+                                <?php echo htmlspecialchars($ss['ss_name'] . ' (' . $ss['ss_year'] . ')'); ?>
                             </option>
                         <?php endwhile; ?>
                     </select>
                     <button type="submit" class="btn btn-primary px-4">Filter</button>
+                    <a href="export.php?type=applied_students&ss_id=<?php echo urlencode($ss_id_filter); ?>" class="btn btn-success px-4">Export</a>
                 </div>
             </form>
 

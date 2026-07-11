@@ -120,6 +120,58 @@ if ($type === 'students') {
     $result = $conn->query($sql);
     $filename = "student_list_export.xls";
 
+} elseif ($type === 'list_type') {
+
+    $ss_type = isset($_GET['ss_type']) ? $_GET['ss_type'] : '';
+    $gender_filter = isset($_GET['gender']) ? $_GET['gender'] : '';
+    $enroll_filter = isset($_GET['enroll']) ? $_GET['enroll'] : '';
+    $course_filter = isset($_GET['course']) ? $_GET['course'] : '';
+    $campus_filter = isset($_GET['campus']) ? $_GET['campus'] : '';
+    $college_filter = isset($_GET['college']) ? $_GET['college'] : '';
+    $year_filter = isset($_GET['year']) ? $_GET['year'] : '';
+
+    if (empty($ss_type)) {
+        die("Invalid scholarship type.");
+    }
+
+    $sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_enroll, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, ss_master.ss_name, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
+            FROM scholarship
+            INNER JOIN student_master ON scholarship.stu_id=student_master.stu_id 
+            INNER JOIN ss_master ON scholarship.ss_id=ss_master.ss_id
+            Where ss_master.ss_type = '".$conn->real_escape_string($ss_type)."'";
+
+    if (!empty($enroll_filter)) {
+        $sql .= " AND student_master.stu_enroll LIKE '%" . $conn->real_escape_string($enroll_filter) . "%'";
+    }
+    if (!empty($course_filter)) {
+        $sql .= " AND student_master.stu_program = '" . $conn->real_escape_string($course_filter) . "'";
+    }
+    if (!empty($gender_filter)) {
+        $safe_gender = $conn->real_escape_string($gender_filter);
+        $sql .= " AND student_master.stu_gender = '$safe_gender'";
+    }
+    if (!empty($campus_filter)) {
+        $sql .= " AND student_master.stu_campus = '" . $conn->real_escape_string($campus_filter) . "'";
+    }
+    if (!empty($college_filter)) {
+        $sql .= " AND student_master.stu_college = '" . $conn->real_escape_string($college_filter) . "'";
+    }
+    if (!empty($year_filter)) {
+        $sql .= " AND student_master.stu_year_level = '" . $conn->real_escape_string($year_filter) . "'";
+    }
+
+    if (!empty($search)) {
+        $safe_search = $conn->real_escape_string($search);
+        $sql .= " AND (student_master.stu_fname LIKE '%$safe_search%' 
+                    OR student_master.stu_lname LIKE '%$safe_search%'
+                    OR ss_master.ss_year LIKE '%$safe_search%'
+                    OR student_master.stu_campus LIKE '%$safe_search%'
+                    OR student_master.stu_college LIKE '%$safe_search%'
+                    OR student_master.stu_program LIKE '%$safe_search%')";
+    }
+    $result = $conn->query($sql);
+    $filename = "student_list_type_export.xls";
+
 } elseif ($type === 'year_wise_summary') {
 
     $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
@@ -188,6 +240,23 @@ if ($type === 'students') {
     $sql .= " ORDER BY s.app_id DESC";
     $result = $conn->query($sql);
     $filename = "applications_export.xls";
+
+} elseif ($type === 'applied_students') {
+
+    $ss_id_filter = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
+
+    $sql = "SELECT s.app_status, stu.stu_fname, stu.stu_lname, stu.stu_email, stu.stu_program, ss.ss_name 
+            FROM scholarship s
+            JOIN student_master stu ON s.stu_id = stu.stu_id
+            JOIN ss_master ss ON s.ss_id = ss.ss_id";
+
+    if (!empty($ss_id_filter)) {
+        $sql .= " WHERE s.ss_id = '" . $conn->real_escape_string($ss_id_filter) . "'";
+    }
+
+    $sql .= " ORDER BY stu.stu_fname ASC";
+    $result = $conn->query($sql);
+    $filename = "applied_students_export.xls";
 
 } else {
     // No valid type given
@@ -280,6 +349,36 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
         </tr>
         <?php } ?>
+    <?php } elseif ($type === 'list_type') { ?>
+        <tr>
+            <th>Enrollment No</th>
+            <th>Student Name</th>
+            <th>Gender</th>
+            <th>Year</th>
+            <th>Campus</th>
+            <th>College</th>
+            <th>Course</th>
+            <th>Scholarship Name</th>
+            <th>Status</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['stu_enroll'] ?? ''); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
+            <td><?php 
+                if ($row['stu_gender'] == 'M') echo 'Male';
+                elseif ($row['stu_gender'] == 'F') echo 'Female';
+                elseif ($row['stu_gender'] == 'O') echo 'Other';
+                else echo htmlspecialchars($row['stu_gender']); 
+            ?></td>
+            <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
+            <td><?php echo htmlspecialchars($row['app_status']); ?></td>
+        </tr>
+        <?php } ?>
     <?php } elseif ($type === 'year_wise_summary') { ?>
         <tr>
             <th>Student Name</th>
@@ -325,6 +424,23 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
             <td><?php echo htmlspecialchars($total_amount); ?></td>
             <td><?php echo htmlspecialchars($total_beneficiary); ?></td>
+            <td><?php echo htmlspecialchars($row['app_status']); ?></td>
+        </tr>
+        <?php } ?>
+    <?php } elseif ($type === 'applied_students') { ?>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Course</th>
+            <th>Scholarship Name</th>
+            <th>Status</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_email']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
         </tr>
         <?php } ?>
