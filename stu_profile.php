@@ -318,6 +318,7 @@ $complete = $row5['complete'];
                     Profile photo updated successfully.
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
+                <script>if(window.history.replaceState) window.history.replaceState(null, null, window.location.pathname);</script>
             <?php } elseif (isset($_GET['photo_error'])) {
                 $errors = [
                     'size' => 'Image must be smaller than 5MB.',
@@ -331,6 +332,7 @@ $complete = $row5['complete'];
                     <?php echo htmlspecialchars($msg); ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
+                <script>if(window.history.replaceState) window.history.replaceState(null, null, window.location.pathname);</script>
             <?php } ?>
             <?php
                 if($complete == 'No')
