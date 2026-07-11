@@ -38,8 +38,11 @@ if (isset($_POST['submit'])) {
             $_SESSION['stu_id'] = $user['stu_id'];
             $_SESSION['stu_enroll'] = $user['stu_enroll'];
             $_SESSION['stu_fname'] = $user['stu_fname'];
-            header("Location: stu_profile.php");
-            
+            if (isset($_REQUEST['redirect']) && $_REQUEST['redirect'] == 'apply') {
+                header("Location: apply_scholarship.php");
+            } else {
+                header("Location: stu_profile.php");
+            }
             exit();
 
         } else {
@@ -88,7 +91,10 @@ if (isset($_POST['submit'])) {
                                 <h3 class="fw-bold text-dark">Student Login</h3>
                             </div>
                             
-                            <form method="post">
+                            <form method="POST" action="">
+                                <?php if (isset($_GET['redirect'])): ?>
+                                    <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_GET['redirect']); ?>">
+                                <?php endif; ?>
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control rounded-3" id="loginID" name="stu_enroll" placeholder="Enter Enrollment No." required />
                                     <label for="loginID"><i class="bi bi-person text-muted me-1"></i> Enrollment No</label>
@@ -142,7 +148,7 @@ if (isset($_POST['submit'])) {
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill"><i class="bi bi-calendar-event me-1"></i> Start: <?php echo date("d M Y", strtotime($notice['ss_start'])); ?></span>
                                     <span class="badge bg-warning text-dark border-0 px-3 py-2 rounded-pill"><i class="bi bi-calendar-x me-1"></i> End: <?php echo date("d M Y", strtotime($notice['ss_end'])); ?></span>
                                 </div>
-                                <div class="text-success fw-bold"><i class="bi bi-arrow-right-circle-fill me-1"></i> Login to Student Portal to apply online!</div>
+                                <a href="index.php?redirect=apply#about-login" class="d-inline-block text-success fw-bold text-decoration-none hover-primary mt-1"><i class="bi bi-arrow-right-circle-fill me-1"></i> Login to Student Portal to apply online!</a>
                             </li>
                         <?php endforeach; ?>
                         </ul>
