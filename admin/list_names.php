@@ -5,7 +5,7 @@ include "../db.php";
 $ss_id = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
 $ss_name = isset($_GET['ss_name']) ? $_GET['ss_name'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$stu_id_filter = isset($_GET['stu_id_filter']) ? $_GET['stu_id_filter'] : '';
+$gender_filter = isset($_GET['gender_filter']) ? $_GET['gender_filter'] : '';
 
 if (empty($ss_id)) {
     header("Location: view_scholarships.php");
@@ -14,15 +14,15 @@ if (empty($ss_id)) {
 
 /*INNER JOIN*/
 
-$sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_fname, student_master.stu_lname, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
+$sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
 FROM scholarship
 INNER JOIN student_master ON scholarship.stu_id=student_master.stu_id 
 INNER JOIN ss_master ON scholarship.ss_id=ss_master.ss_id
 Where scholarship.ss_id = '".$conn->real_escape_string($ss_id)."'";
 
-if (!empty($stu_id_filter)) {
-    $safe_stu_id = $conn->real_escape_string($stu_id_filter);
-    $sql .= " AND student_master.stu_id = '$safe_stu_id'";
+if (!empty($gender_filter)) {
+    $safe_gender = $conn->real_escape_string($gender_filter);
+    $sql .= " AND student_master.stu_gender = '$safe_gender'";
 }
 
 if (!empty($search)) {
@@ -70,13 +70,19 @@ $result = $conn->query($sql);
         <input type="hidden" name="ss_id" value="<?php echo htmlspecialchars($ss_id); ?>">
         <input type="hidden" name="ss_name" value="<?php echo htmlspecialchars($ss_name); ?>">
         <div class="col-md-2">
-            <input type="text" name="stu_id_filter" class="form-control" placeholder="STU_ID..." value="<?php echo htmlspecialchars($stu_id_filter); ?>">
+            <select name="gender_filter" class="form-select">
+                <option value="">All Genders</option>
+                <option value="M" <?php if($gender_filter == 'M') echo 'selected'; ?>>Male</option>
+                <option value="F" <?php if($gender_filter == 'F') echo 'selected'; ?>>Female</option>
+                <option value="O" <?php if($gender_filter == 'O') echo 'selected'; ?>>Other</option>
+            </select>
         </div>
         <div class="col-md-4">
             <input type="text" name="search" class="form-control" placeholder="Search others..." value="<?php echo htmlspecialchars($search); ?>">
         </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary">Search</button>
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="export.php?type=list_names&ss_id=<?php echo urlencode($ss_id); ?>&search=<?php echo urlencode($search); ?>&gender=<?php echo urlencode($gender_filter); ?>" class="btn btn-success ms-2">Export to Excel</a>
         </div>
     </div>
 </form>
@@ -85,9 +91,8 @@ $result = $conn->query($sql);
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
-            <th>SS_ID</th>
-            <th>STU_ID</th>
             <th>Student Name</th>
+            <th>Gender</th>
             <th>Year</th>
             <th>Campus</th>
             <th>College</th>
@@ -102,9 +107,13 @@ $result = $conn->query($sql);
             while ($row = $result->fetch_assoc()) {
         ?>
         <tr>
-            <td><?php echo $row['ss_id']; ?></td>
-            <td><?php echo $row['stu_id']; ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
+            <td><?php 
+                if ($row['stu_gender'] == 'M') echo 'Male';
+                elseif ($row['stu_gender'] == 'F') echo 'Female';
+                elseif ($row['stu_gender'] == 'O') echo 'Other';
+                else echo htmlspecialchars($row['stu_gender']); 
+            ?></td>
             <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
