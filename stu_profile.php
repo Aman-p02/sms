@@ -351,7 +351,7 @@ $complete = $row5['complete'];
                                 ? "uploads/profile_photos/" . $user['stu_profilepic'] 
                                 : null;
                             if ($__photo_path) { ?>
-                                <img src="<?php echo htmlspecialchars($__photo_path); ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-fluid border rounded shadow-sm" style="width: 150px; height: 200px; object-fit: cover;">
+                                <img src="<?php echo htmlspecialchars($__photo_path); ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-fluid border rounded shadow-sm" style="width: 150px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
                             <?php } else { ?>
                                 <div class="border rounded d-flex align-items-center justify-content-center mx-auto bg-light text-muted shadow-sm" style="width: 150px; height: 200px; font-size: 14px;">
                                     No Photo
