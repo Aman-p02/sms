@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Scholarship Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f6f9; }
+        .sidebar {
+            min-height: 100vh;
+            background: #212529;
+            color: #fff;
+        }
+        .sidebar a {
+            color: #dcdcdc;
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background: #343a40;
+            color: #fff;
+        }
+        .card-custom {
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        <div class="col-md-3 col-lg-2 sidebar p-0">
+            <h4 class="text-center py-3 border-bottom border-secondary">Admin Panel</h4>
+
+            <a href="#addScholarship">Add New Scholarship</a>
+            <a href="#appliedStudents">Applied Students</a>
+            <a href="#approveReject">Approve / Reject Applications</a>
+            <a href="#yearSummary">Year-wise Summary</a>
+            <a href="#">Settings</a>
+            <a href="#">Logout</a>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-md-9 col-lg-10 p-4">
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Scholarship Admin Dashboard</h2>
+                <button class="btn btn-dark">Admin Profile</button>
+            </div>
+
+            <!-- ADMIN CARDS -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow card-custom">
+                        <div class="card-body text-center">
+                            <h5>Add Scholarship</h5>
+                            <p>Create new scholarship schemes</p>
+                            <a href="#addScholarship" class="btn btn-primary btn-sm">Open</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow card-custom">
+                        <div class="card-body text-center">
+                            <h5>View Applicants</h5>
+                            <p>Check students who applied</p>
+                            <a href="#appliedStudents" class="btn btn-success btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow card-custom">
+                        <div class="card-body text-center">
+                            <h5>Approval Panel</h5>
+                            <p>Approve or Reject applications</p>
+                            <a href="#approveReject" class="btn btn-danger btn-sm">Manage</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD NEW SCHOLARSHIP -->
+            <div id="addScholarship" class="mt-5">
+                <h4 class="mb-3">Add New Scholarship</h4>
+                <div class="card p-3 shadow card-custom">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Scholarship Name</label>
+                                <input type="text" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Type</label>
+                                <select class="form-select">
+                                    <option>Merit-based</option>
+                                    <option>Need-based</option>
+                                    <option>Minority Scholarship</option>
+                                    <option>Research Scholarship</option>
+                                    <option>Sports Scholarship</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">End Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Amount</label>
+                                <input type="number" class="form-control">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-3">Add Scholarship</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- APPLIED STUDENTS LIST -->
+            <div id="appliedStudents" class="mt-5">
+                <h4 class="mb-3">List of Applied Students</h4>
+                <div class="card p-3 shadow card-custom">
+
+                    <label>Select Scholarship Type</label>
+                    <select class="form-select mb-3">
+                        <option>Merit-based</option>
+                        <option>Need-based</option>
+                        <option>Minority</option>
+                        <option>Research</option>
+                    </select>
+
+                    <table class="table table-bordered">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>CGPA</th>
+                                <th>Date Applied</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mahesh Sharma</td>
+                                <td>mahesh@example.com</td>
+                                <td>B.Tech</td>
+                                <td>8.7</td>
+                                <td>18-Nov-2025</td>
+                            </tr>
+                            <tr>
+                                <td>Aisha Khan</td>
+                                <td>aisha@example.com</td>
+                                <td>B.Sc</td>
+                                <td>9.2</td>
+                                <td>16-Nov-2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- APPROVE / REJECT SECTION -->
+            <div id="approveReject" class="mt-5">
+                <h4 class="mb-3">Approve or Reject Scholarship Applications</h4>
+                <div class="card p-3 shadow card-custom">
+
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Student</th>
+                                <th>Scholarship</th>
+                                <th>CGPA</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Rahul Verma</td>
+                                <td>Need-based Scholarship</td>
+                                <td>8.5</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm">Approve</button>
+                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Neha Patel</td>
+                                <td>Merit Scholarship</td>
+                                <td>9.4</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm">Approve</button>
+                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <!-- YEAR-WISE SUMMARY -->
+            <div id="yearSummary" class="mt-5 mb-5">
+                <h4 class="mb-3">Year-wise Scholarship Summary</h4>
+                <div class="card p-3 shadow card-custom">
+
+                    <table class="table table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Year</th>
+                                <th>Scholarship Type</th>
+                                <th>Total Applicants</th>
+                                <th>Approved</th>
+                                <th>Rejected</th>
+                                <th>Total Amount Disbursed</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>2023</td>
+                                <td>Merit-based</td>
+                                <td>520</td>
+                                <td>410</td>
+                                <td>110</td>
+                                <td>₹42,00,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>2024</td>
+                                <td>Need-based</td>
+                                <td>380</td>
+                                <td>260</td>
+                                <td>120</td>
+                                <td>₹28,50,000</td>
+                            </tr>
+
+                            <tr>
+                                <td>2025</td>
+                                <td>Minority</td>
+                                <td>450</td>
+                                <td>300</td>
+                                <td>150</td>
+                                <td>₹36,75,000</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
