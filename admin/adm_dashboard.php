@@ -2,9 +2,21 @@
 require_once 'session.php';
 include "../db.php";
 
+// Total Scholarships
+$scholarship_res = $conn->query("SELECT COUNT(*) as cnt FROM ss_master");
+$total_scholarships = $scholarship_res->fetch_assoc()['cnt'] ?? 0;
+
+// Total Applicants
+$applicant_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship");
+$total_applicants = $applicant_res->fetch_assoc()['cnt'] ?? 0;
+
+// Approved Candidates
+$approved_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship WHERE app_status = 'Approved'");
+$approved_candidates = $approved_res->fetch_assoc()['cnt'] ?? 0;
+
+// Approved Amount
 $amount_res = $conn->query("SELECT SUM(sm.ss_amount) as total_amount FROM scholarship sc INNER JOIN ss_master sm ON sc.ss_id = sm.ss_id WHERE sc.app_status = 'Approved'");
-$amount_row = $amount_res->fetch_assoc();
-$total_approved_amount = $amount_row['total_amount'] ?? 0;
+$total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +45,7 @@ $total_approved_amount = $amount_row['total_amount'] ?? 0;
                         <a href="view_scholarships.php" class="text-decoration-none text-dark">
                             <div class="card shadow card-custom p-3 text-center">
                                 <h5>Total Scholarships</h5>
-                                <h3>12</h3>
+                                <h3><?php echo number_format($total_scholarships); ?></h3>
                             </div>
                         </a>
                     </div>
@@ -42,7 +54,7 @@ $total_approved_amount = $amount_row['total_amount'] ?? 0;
                         <a href="applied_student.php" class="text-decoration-none text-dark">
                             <div class="card shadow card-custom p-3 text-center">
                                 <h5>Total Applicants</h5>
-                                <h3>560</h3>
+                                <h3><?php echo number_format($total_applicants); ?></h3>
                             </div>
                         </a>
                     </div>
@@ -51,7 +63,7 @@ $total_approved_amount = $amount_row['total_amount'] ?? 0;
                         <a href="approve.php" class="text-decoration-none text-dark">
                             <div class="card shadow card-custom p-3 text-center">
                                 <h5>Approved Candidates</h5>
-                                <h3>98</h3>
+                                <h3><?php echo number_format($approved_candidates); ?></h3>
                             </div>
                         </a>
                     </div>

@@ -4,16 +4,43 @@ include "../db.php";
 
 function getShortCourseName($fullName) {
     $map = [
-        'BACHELOR OF SCIENCE IN CIVIL ENGINEERING' => 'BSCE',
-        'BACHELOR OF SCIENCE IN COMPUTER SCIENCE MAJOR IN C' => 'BSCS',
-        'BACHELOR OF ARTS MAJOR IN ECONOMICS' => 'BA Economics',
-        'BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJ' => 'BSBA',
+        'BACHELOR OF SCIENCE IN CIVIL ENGINEERING' => 'BS (CE)',
+        'BACHELOR OF SCIENCE IN COMPUTER SCIENCE MAJOR IN C' => 'BS (CS)',
+        'BACHELOR OF ARTS MAJOR IN ECONOMICS' => 'BA (E)',
+        'BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJ' => 'BS (BA)',
         'IT' => 'IT'
     ];
     $upper = strtoupper(trim($fullName));
     if (isset($map[$upper])) {
         return $map[$upper];
     }
+    
+    $prefix = '';
+    $name = $upper;
+    if (strpos($name, 'BACHELOR OF SCIENCE IN') !== false) {
+        $prefix = 'BS';
+        $name = str_replace('BACHELOR OF SCIENCE IN', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF ARTS IN') !== false) {
+        $prefix = 'BA';
+        $name = str_replace('BACHELOR OF ARTS IN', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF ARTS MAJOR IN') !== false) {
+        $prefix = 'BA';
+        $name = str_replace('BACHELOR OF ARTS MAJOR IN', '', $name);
+    }
+    
+    if ($prefix !== '') {
+        $words = explode(' ', $name);
+        $acronym = '';
+        $skipWords = ['AND', 'IN', 'OF', 'THE', 'MAJOR'];
+        foreach ($words as $w) {
+            $w = trim($w);
+            if (empty($w)) continue;
+            if (in_array($w, $skipWords)) continue;
+            $acronym .= $w[0];
+        }
+        return $prefix . ' (' . $acronym . ')';
+    }
+    
     return $fullName;
 }
 
