@@ -58,54 +58,61 @@ if (isset($_POST['submit'])) {
     
 <!------------------ BODY ---------------------->
     <!-- Hero Section -->
-    <section class="bg-light py-5 text-center border-bottom">
-        <div class="container">
-            <h1 class="display-5 fw-bold">Scholarship Management System</h1>
-            <p class="lead mt-3">Digitizing scholarship applications, verification, evaluation, and beneficiary management.</p>
+    <section class="py-5 text-center bg-white border-bottom">
+        <div class="container pt-4 pb-3">
+            <h1 class="display-4 fw-bold text-primary mb-3"><i class="bi bi-mortarboard-fill me-2"></i>Scholarship Management System</h1>
+            <p class="lead fw-medium text-muted">Digitizing scholarship applications, verification, evaluation, and beneficiary management.</p>
         </div>
     </section>
 
     <!-- About + Login Two Column Section -->
-    <section id="about-login" class="py-5">
-        <div class="container">
-            <div class="row g-4">
+    <section id="about-login" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="row g-5 align-items-center">
 
                 <!-- Left Column: About Section -->
-                <div class="col-md-6">
-                    <h2 class="fw-bold">About the Scholarship Program</h2>
-                    <p class="mt-3">A Scholarship Management System significantly enhances the efficiency and fairness of the scholarship lifecycle by digitizing application, evaluation, and disbursement processes. Its automated workflows reduce manual errors, improve data accuracy, and ensure timely communication with applicants. The system also fosters transparency through standardized scoring mechanisms, minimizing human bias and supporting equitable decision-making. Furthermore, its integrated document management and analytics capabilities enable institutions to monitor trends, track fund utilization, and generate audit-ready reports. By offering secure, accessible, and cost-effective operations, a Scholarship Management System serves as a transformative tool for educational organizations, improving administrative productivity while expanding opportunities for deserving students.</p>
+                <div class="col-lg-6 pe-lg-5">
+                    <h2 class="fw-bold text-dark mb-4">About the Scholarship Program <i class="bi bi-info-circle text-primary fs-4 ms-2"></i></h2>
+                    <p class="text-secondary lh-lg fs-5">A Scholarship Management System significantly enhances the efficiency and fairness of the scholarship lifecycle by digitizing application, evaluation, and disbursement processes. Its automated workflows reduce manual errors, improve data accuracy, and ensure timely communication with applicants.</p>
+                    <p class="text-secondary lh-lg fs-5">The system also fosters transparency through standardized scoring mechanisms, minimizing human bias and supporting equitable decision-making. Furthermore, its integrated document management and analytics capabilities enable institutions to monitor trends, track fund utilization, and generate audit-ready reports.</p>
                 </div>
 
                 <!-- Right Column: Login Card -->
-                <div class="col-md-6 d-flex justify-content-center">
-                    <div class="card shadow w-100" style="max-width: 400px;">
-                        <div class="card-body">
-                            <h3 class="text-center mb-4 fw-bold">Student Login</h3>
+                <div class="col-lg-6 d-flex justify-content-center">
+                    <div class="card shadow-lg w-100 rounded-4 border-0 hover-lift" style="max-width: 420px;">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                                    <i class="bi bi-person-fill-lock text-primary fs-1"></i>
+                                </div>
+                                <h3 class="fw-bold text-dark">Student Login</h3>
+                            </div>
+                            
                             <form method="post">
-                                <div class="mb-3">
-                                    <label for="loginID" class="form-label">Enrollment No</label>
-                                    <input type="text" class="form-control" id="loginID" name="stu_enroll" placeholder="Enter Enrollment No." />
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control rounded-3" id="loginID" name="stu_enroll" placeholder="Enter Enrollment No." required />
+                                    <label for="loginID"><i class="bi bi-person text-muted me-1"></i> Enrollment No</label>
                                 </div>
                                 
-                                
-                                <div class="mb-3">
-                                    <label for="loginPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="loginPassword" name = "stu_pass" placeholder="Enter your password" />
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control rounded-3" id="loginPassword" name="stu_pass" placeholder="Enter your password" required />
+                                    <label for="loginPassword"><i class="bi bi-key text-muted me-1"></i> Password</label>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary w-100" 
-                                name="submit" style="margin-bottom:10px;">Login</button>
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold mb-3 shadow-sm" name="submit">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </button>
                                 
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
-                                    <a href="register.php" class="text-decoration-none">Register</a>
+                                <div class="d-flex justify-content-between align-items-center mt-3 small fw-medium">
+                                    <a href="#" class="text-decoration-none text-muted hover-primary" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
+                                    <a href="register.php" class="text-decoration-none text-primary">Create an account</a>
                                 </div>
                             </form>
                             <?php
                                 if (!empty($message)) {
-                                    echo $message;
+                                    echo "<div class='mt-3'>" . $message . "</div>";
                                 }
-                                ?>
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -118,24 +125,24 @@ if (isset($_POST['submit'])) {
 
     <!-- Features Section -->
     <section id="features" class="py-5 bg-light">
-        <div class="container">
+        <div class="container py-4">
             <!-- Notice Board Rectangle -->
             <?php if (!empty($notices)): ?>
-            <div class="card shadow-sm border-0 mb-5">
-                <div class="card-header bg-danger text-white fw-bold fs-5">
-                    📢 NOTICE BOARD - LATEST SCHOLARSHIPS
+            <div class="card shadow-lg border-0 mb-5 rounded-4 overflow-hidden">
+                <div class="card-header text-white fw-bold fs-5 py-3" style="background: linear-gradient(90deg, #dc3545 0%, #f1aeb5 100%);">
+                    <i class="bi bi-megaphone-fill me-2 text-white"></i> NOTICE BOARD - LATEST SCHOLARSHIPS
                 </div>
-                <div class="card-body p-0">
-                    <marquee behavior="scroll" direction="up" height="200" onmouseover="this.stop();" onmouseout="this.start();" class="p-3">
+                <div class="card-body p-0 bg-white">
+                    <marquee behavior="scroll" direction="up" height="400" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();" class="p-4">
                         <ul class="list-unstyled mb-0">
                         <?php foreach($notices as $notice): ?>
-                            <li class="mb-4 border-bottom pb-3">
-                                <h5 class="fw-bold text-primary mb-2">✨ <?php echo htmlspecialchars($notice['ss_name']); ?></h5>
-                                <div class="mb-2">
-                                    <span class="badge bg-light text-dark border p-2 me-2">Start: <?php echo date("d M Y", strtotime($notice['ss_start'])); ?></span>
-                                    <span class="badge bg-warning text-dark border p-2">End: <?php echo date("d M Y", strtotime($notice['ss_end'])); ?></span>
+                            <li class="mb-4 pb-4 border-bottom position-relative">
+                                <h5 class="fw-bold text-primary mb-3"><i class="bi bi-award-fill text-warning me-2"></i> <?php echo htmlspecialchars($notice['ss_name']); ?></h5>
+                                <div class="d-flex gap-2 flex-wrap mb-3">
+                                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill"><i class="bi bi-calendar-event me-1"></i> Start: <?php echo date("d M Y", strtotime($notice['ss_start'])); ?></span>
+                                    <span class="badge bg-warning text-dark border-0 px-3 py-2 rounded-pill"><i class="bi bi-calendar-x me-1"></i> End: <?php echo date("d M Y", strtotime($notice['ss_end'])); ?></span>
                                 </div>
-                                <div class="text-success fw-semibold">👉 <em>Login to Student Portal to apply online!</em></div>
+                                <div class="text-success fw-bold"><i class="bi bi-arrow-right-circle-fill me-1"></i> Login to Student Portal to apply online!</div>
                             </li>
                         <?php endforeach; ?>
                         </ul>
@@ -144,29 +151,42 @@ if (isset($_POST['submit'])) {
             </div>
             <?php endif; ?>
 
-            <h2 class="fw-bold">Key Features</h2>
-            <div class="row mt-4">
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark display-6">Key Features</h2>
+                <div class="mx-auto bg-primary rounded" style="width: 80px; height: 4px; margin-top: 10px;"></div>
+            </div>
+            
+            <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 hover-lift text-center p-3">
                         <div class="card-body">
-                            <h5 class="card-title">Online Application</h5>
-                            <p class="card-text">Students can apply from anywhere with simplified online form submission.</p>
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-4">
+                                <i class="bi bi-laptop text-primary fs-2"></i>
+                            </div>
+                            <h4 class="card-title fw-bold mb-3">Online Application</h4>
+                            <p class="card-text text-muted">Students can apply securely from anywhere with a simplified online form submission process.</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 hover-lift text-center p-3">
                         <div class="card-body">
-                            <h5 class="card-title">Automated Verification</h5>
-                            <p class="card-text">Effortless document verification and eligibility checking using digital tools.</p>
+                            <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-4">
+                                <i class="bi bi-shield-check text-success fs-2"></i>
+                            </div>
+                            <h4 class="card-title fw-bold mb-3">Automated Verification</h4>
+                            <p class="card-text text-muted">Effortless document verification and eligibility checking using integrated digital tools.</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 hover-lift text-center p-3">
                         <div class="card-body">
-                            <h5 class="card-title">Smart Evaluation</h5>
-                            <p class="card-text">AI/ML-assisted scoring ensures fairness and transparency in selection.</p>
+                            <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex p-3 mb-4">
+                                <i class="bi bi-cpu text-info fs-2"></i>
+                            </div>
+                            <h4 class="card-title fw-bold mb-3">Smart Evaluation</h4>
+                            <p class="card-text text-muted">Intelligent scoring mechanisms ensure complete fairness and transparency in selection.</p>
                         </div>
                     </div>
                 </div>

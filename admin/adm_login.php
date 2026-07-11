@@ -48,56 +48,47 @@ if (isset($_POST['submit'])) {
        
     
 <!------------------ BODY ---------------------->
-    <!-- Hero Section -->
-    <section class="bg-light py-5 text-center border-bottom">
-        <div class="container">
-            <h1 class="display-5 fw-bold">Scholarship Management System</h1>
-            <p class="lead mt-3">Digitizing scholarship applications, verification, evaluation, and beneficiary management.</p>
-            <!--<a href="#apply" class="btn btn-primary btn-lg mt-3">Apply Now</a>-->
-        </div>
-    </section>
+    <!-- Admin Login Section -->
+    <section id="admin-login" class="py-5 bg-white" style="min-height: 80vh; display: flex; align-items: center;">
+        <div class="container py-4">
+            <div class="row justify-content-center">
 
-    <!-- About + Login Two Column Section -->
-    <section id="about-login" class="py-5">
-        <div class="container">
-            <div class="row g-4">
-
-                <!-- Left Column: About Section -->
-                <div class="col-md-6">
-                    <h2 class="fw-bold">About the Scholarship Program</h2>
-                    <p class="mt-3">A Scholarship Management System significantly enhances the efficiency and fairness of the scholarship lifecycle by digitizing application, evaluation, and disbursement processes. Its automated workflows reduce manual errors, improve data accuracy, and ensure timely communication with applicants. The system also fosters transparency through standardized scoring mechanisms, minimizing human bias and supporting equitable decision-making. Furthermore, its integrated document management and analytics capabilities enable institutions to monitor trends, track fund utilization, and generate audit-ready reports. By offering secure, accessible, and cost-effective operations, a Scholarship Management System serves as a transformative tool for educational organizations, improving administrative productivity while expanding opportunities for deserving students.</p>
-                </div>
-
-                <!-- Right Column: Login Card -->
-                <div class="col-md-6 d-flex justify-content-center">
-                    <div class="card shadow w-100" style="max-width: 400px;">
-                        <div class="card-body">
-                            <h3 class="text-center mb-4 fw-bold">Admin Login</h3>
+                <!-- Admin Login Card -->
+                <div class="col-lg-5 d-flex justify-content-center">
+                    <div class="card shadow-lg w-100 rounded-4 border-0 hover-lift" style="max-width: 420px;">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                                    <i class="bi bi-shield-lock-fill text-danger fs-1"></i>
+                                </div>
+                                <h3 class="fw-bold text-dark">Admin Login</h3>
+                                <p class="text-muted small">Secure access to the management portal</p>
+                            </div>
+                            
                             <form method="post">
-                                <div class="mb-3">
-                                    <label for="loginID" class="form-label">User Name</label>
-                                    <input type="text" class="form-control" id="loginID" name="adm_user" placeholder="Enter user name" />
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control rounded-3" id="loginID" name="adm_user" placeholder="Enter user name" required />
+                                    <label for="loginID"><i class="bi bi-person-badge text-muted me-1"></i> Username</label>
                                 </div>
                                 
-                                
-                                <div class="mb-3">
-                                    <label for="loginPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="loginPassword" name = "adm_pass" placeholder="Enter your password" />
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control rounded-3" id="loginPassword" name="adm_pass" placeholder="Enter your password" required />
+                                    <label for="loginPassword"><i class="bi bi-key text-muted me-1"></i> Password</label>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary w-100" 
-                                name="submit">Login</button>
+                                <button type="submit" class="btn btn-danger btn-lg w-100 rounded-pill fw-bold mb-3 shadow-sm" name="submit">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Access Portal
+                                </button>
                                 
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
-                                    <a href="register.php" class="text-decoration-none">Register</a>
+                                <div class="text-center mt-3 small fw-medium">
+                                    <a href="/SMS/index.php" class="text-decoration-none text-muted hover-danger"><i class="bi bi-arrow-left me-1"></i> Back to Home</a>
                                 </div>
                             </form>
                             <?php
                                 if (!empty($message)) {
-                                    echo $message;
+                                    echo "<div class='mt-3 text-center'>" . $message . "</div>";
                                 }
-                                ?>
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -105,12 +96,6 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </section>
-
-    
-
-    
-
-    
  
 
 
