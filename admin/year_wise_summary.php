@@ -2,6 +2,21 @@
 require_once 'session.php';
 include "../db.php";
 
+function getShortCourseName($fullName) {
+    $map = [
+        'BACHELOR OF SCIENCE IN CIVIL ENGINEERING' => 'BSCE',
+        'BACHELOR OF SCIENCE IN COMPUTER SCIENCE MAJOR IN C' => 'BSCS',
+        'BACHELOR OF ARTS MAJOR IN ECONOMICS' => 'BA Economics',
+        'BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJ' => 'BSBA',
+        'IT' => 'IT'
+    ];
+    $upper = strtoupper(trim($fullName));
+    if (isset($map[$upper])) {
+        return $map[$upper];
+    }
+    return $fullName;
+}
+
 // Fetch distinct values for filters
 $years = $conn->query("SELECT DISTINCT ss_year FROM ss_master WHERE ss_year IS NOT NULL AND ss_year != '' ORDER BY ss_year DESC");
 $colleges = $conn->query("SELECT DISTINCT stu_college FROM student_master WHERE stu_college IS NOT NULL AND stu_college != '' ORDER BY stu_college ASC");
@@ -94,7 +109,7 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label fw-bold">Scholarship Name</label>
                         <select name="scholarship" class="form-select">
                             <option value="">All Scholarships</option>
@@ -114,8 +129,9 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-1">
-                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    <div class="col-md-2 d-flex gap-1">
+                        <button type="submit" class="btn btn-primary w-50">Filter</button>
+                        <a href="export.php?type=year_wise_summary&year=<?php echo urlencode($filter_year); ?>&college=<?php echo urlencode($filter_college); ?>&course=<?php echo urlencode($filter_course); ?>&scholarship=<?php echo urlencode($filter_scholarship); ?>&amount=<?php echo urlencode($filter_amount); ?>" class="btn btn-success w-50" title="Export to Excel">Export</a>
                     </div>
                 </form>
             </div>
@@ -147,7 +163,7 @@ $result = $conn->query($sql);
                             <tr>
                                 <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
                                 <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
-                                <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+                                <td><?php echo htmlspecialchars(getShortCourseName($row['stu_program'])); ?></td>
                                 <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
                                 <td><?php echo htmlspecialchars($row['ss_amount']); ?></td>

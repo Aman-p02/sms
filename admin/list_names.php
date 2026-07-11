@@ -2,6 +2,21 @@
 require_once 'session.php';
 include "../db.php";
 
+function getShortCourseName($fullName) {
+    $map = [
+        'BACHELOR OF SCIENCE IN CIVIL ENGINEERING' => 'BSCE',
+        'BACHELOR OF SCIENCE IN COMPUTER SCIENCE MAJOR IN C' => 'BSCS',
+        'BACHELOR OF ARTS MAJOR IN ECONOMICS' => 'BA Economics',
+        'BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJ' => 'BSBA',
+        'IT' => 'IT'
+    ];
+    $upper = strtoupper(trim($fullName));
+    if (isset($map[$upper])) {
+        return $map[$upper];
+    }
+    return $fullName;
+}
+
 $ss_id = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
 $ss_name = isset($_GET['ss_name']) ? $_GET['ss_name'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -117,7 +132,7 @@ $result = $conn->query($sql);
             <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars(getShortCourseName($row['stu_program'])); ?></td>
             <td>
                 <?php
                 if ($row['app_status'] == 'Applied')

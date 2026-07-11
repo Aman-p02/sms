@@ -59,6 +59,41 @@ if ($type === 'students') {
     $result = $conn->query($sql);
     $filename = "student_list_export.xls";
 
+} elseif ($type === 'year_wise_summary') {
+
+    $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
+    $filter_college = isset($_GET['college']) ? $_GET['college'] : '';
+    $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
+    $filter_scholarship = isset($_GET['scholarship']) ? $_GET['scholarship'] : '';
+    $filter_amount = isset($_GET['amount']) ? $_GET['amount'] : '';
+
+    $sql = "SELECT s.stu_fname, s.stu_lname, s.stu_college, s.stu_program, 
+                   sm.ss_name, sm.ss_year, sm.ss_amount, sc.app_status 
+            FROM scholarship sc
+            INNER JOIN student_master s ON sc.stu_id = s.stu_id
+            INNER JOIN ss_master sm ON sc.ss_id = sm.ss_id
+            WHERE 1=1";
+
+    if (!empty($filter_year)) {
+        $sql .= " AND sm.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
+    }
+    if (!empty($filter_college)) {
+        $sql .= " AND s.stu_college = '" . $conn->real_escape_string($filter_college) . "'";
+    }
+    if (!empty($filter_course)) {
+        $sql .= " AND s.stu_program = '" . $conn->real_escape_string($filter_course) . "'";
+    }
+    if (!empty($filter_scholarship)) {
+        $sql .= " AND sm.ss_name = '" . $conn->real_escape_string($filter_scholarship) . "'";
+    }
+    if (!empty($filter_amount)) {
+        $sql .= " AND sm.ss_amount = '" . $conn->real_escape_string($filter_amount) . "'";
+    }
+
+    $sql .= " ORDER BY sm.ss_year DESC, s.stu_fname ASC";
+    $result = $conn->query($sql);
+    $filename = "year_wise_summary_export.xls";
+
 } else {
     // No valid type given
     die("Invalid export type.");
@@ -139,6 +174,27 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars($row['app_status']); ?></td>
+        </tr>
+        <?php } ?>
+    <?php } elseif ($type === 'year_wise_summary') { ?>
+        <tr>
+            <th>Student Name</th>
+            <th>College</th>
+            <th>Course</th>
+            <th>Scholarship</th>
+            <th>Year</th>
+            <th>Amount</th>
+            <th>Status</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_amount']); ?></td>
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
         </tr>
         <?php } ?>
