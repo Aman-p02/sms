@@ -18,14 +18,13 @@ if (isset($_GET['action']) && isset($_GET['app_id'])) {
 }
 
 $sql = "SELECT 
-            s.app_id, 
+            s.app_id, s.app_status,
             stu.stu_fname, stu.stu_lname,
             ss.ss_name, ss.ss_type, ss.ss_amount, ss.ss_id,
             (SELECT COUNT(*) FROM scholarship WHERE ss_id = ss.ss_id AND app_status = 'Approved') AS total_beneficiary
         FROM scholarship s
         JOIN student_master stu ON s.stu_id = stu.stu_id
         JOIN ss_master ss ON s.ss_id = ss.ss_id
-        WHERE s.app_status = 'Applied'
         ORDER BY s.app_id DESC";
 $result = $conn->query($sql);
 
@@ -59,6 +58,7 @@ $result = $conn->query($sql);
                         <th>Name of Scholarship</th>
                         <th>Total Amount</th>
                         <th>Total Beneficiary</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -79,16 +79,25 @@ $result = $conn->query($sql);
                                 <td><?php echo number_format($total_amount, 2); ?></td>
                                 <td><?php echo $total_beneficiary; ?></td>
                                 <td>
+                                    <?php if ($row['app_status'] == 'Applied'): ?>
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    <?php elseif ($row['app_status'] == 'Approved'): ?>
+                                        <span class="badge bg-success">Approved</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-danger">Rejected</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
                                     <div class="d-flex gap-2">
-                                        <a href="approve.php?action=approve&app_id=<?php echo $row['app_id']; ?>" class="btn btn-success btn-sm" onclick="return confirm('Are you sure you want to approve this application?');">Approve</a>
-                                        <a href="approve.php?action=reject&app_id=<?php echo $row['app_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to reject this application?');">Reject</a>
+                                        <a href="approve.php?action=approve&app_id=<?php echo $row['app_id']; ?>" class="btn btn-success btn-sm <?php echo ($row['app_status'] == 'Approved') ? 'disabled' : ''; ?>" onclick="return confirm('Are you sure you want to approve this application?');">Approve</a>
+                                        <a href="approve.php?action=reject&app_id=<?php echo $row['app_id']; ?>" class="btn btn-danger btn-sm <?php echo ($row['app_status'] == 'Rejected') ? 'disabled' : ''; ?>" onclick="return confirm('Are you sure you want to reject this application?');">Reject</a>
                                     </div>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No pending applications found.</td>
+                            <td colspan="8" class="text-center text-muted py-4">No applications found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
