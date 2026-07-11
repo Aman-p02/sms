@@ -199,7 +199,7 @@ if (isset($_POST['submit'])) {
         <div class="container">
             <h2 class="fw-bold">Apply for Scholarship</h2>
             <p class="mt-3">Start your scholarship journey by filling out the online application form.</p>
-            <a href="#" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#signinModal">Start Application</a>
+            <a href="#about-login" class="btn btn-success btn-lg rounded-pill px-5 shadow-sm fw-bold">Start Application</a>
         </div>
     </section>
     
