@@ -11,7 +11,7 @@ if (!isset($_SESSION['stu_id'])) {
 $stu_id = $_SESSION['stu_id'];
 
 // Redirect back to whichever page triggered the upload (falls back to dashboard)
-$return_page = "stu_dashboard.php";
+$return_page = "stu_profile.php";
 if (!empty($_POST['return_to'])) {
     // Only allow local .php filenames, never external URLs
     $candidate = basename($_POST['return_to']);

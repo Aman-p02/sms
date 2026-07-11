@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['stu_id'] = $user['stu_id'];
             $_SESSION['stu_enroll'] = $user['stu_enroll'];
             $_SESSION['stu_fname'] = $user['stu_fname'];
-            header("Location: stu_dashboard.php");
+            header("Location: stu_profile.php");
             
             exit();
 

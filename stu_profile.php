@@ -22,11 +22,7 @@ $stu_id = $_SESSION['stu_id'];
 $stu_enroll = $_SESSION['stu_enroll'];
 $stu_fname = $_SESSION['stu_fname'];
 
-/*To fill values in form*/
-$stmt = $conn->prepare("SELECT * FROM `student_master` WHERE `stu_id` = '". $stu_id ."' ");
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+/*To fill values in form (moved below update)*/
     
 
 /*FETCH CAMPUS*/
@@ -287,6 +283,11 @@ if (isset($_POST['update_profile'])) {
 
 <?php
 /*FETCH SIGLE RAW*/
+$stmt = $conn->prepare("SELECT * FROM `student_master` WHERE `stu_id` = '". $stu_id ."' ");
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
 $result5 = mysqli_query($conn, "SELECT * FROM student_master WHERE stu_id = '".$stu_id."'");
 $row5 = mysqli_fetch_assoc($result5);
 $complete = $row5['complete'];    
@@ -350,9 +351,9 @@ $complete = $row5['complete'];
                                 ? "uploads/profile_photos/" . $user['stu_profilepic'] 
                                 : null;
                             if ($__photo_path) { ?>
-                                <img src="<?php echo htmlspecialchars($__photo_path); ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-fluid border" style="width: 150px; height: 150px; object-fit: cover;">
+                                <img src="<?php echo htmlspecialchars($__photo_path); ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-fluid border rounded shadow-sm" style="width: 150px; height: 200px; object-fit: cover;">
                             <?php } else { ?>
-                                <div class="border d-flex align-items-center justify-content-center mx-auto bg-light text-muted" style="width: 150px; height: 150px; font-size: 14px;">
+                                <div class="border rounded d-flex align-items-center justify-content-center mx-auto bg-light text-muted shadow-sm" style="width: 150px; height: 200px; font-size: 14px;">
                                     No Photo
                                 </div>
                             <?php } ?>
@@ -372,8 +373,12 @@ $complete = $row5['complete'];
                                 <div class="col-sm-9 fw-semibold"><?php echo htmlspecialchars($user['stu_email'] ?? '-'); ?></div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-sm-3 text-muted">Campus / College:</div>
-                                <div class="col-sm-9 fw-semibold"><?php echo htmlspecialchars(($user['stu_campus'] ?? '-') . ' - ' . ($user['stu_college'] ?? '-')); ?></div>
+                                <div class="col-sm-3 text-muted">Campus:</div>
+                                <div class="col-sm-9 fw-semibold"><?php echo htmlspecialchars($user['stu_campus'] ?? '-'); ?></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-3 text-muted">College:</div>
+                                <div class="col-sm-9 fw-semibold"><?php echo htmlspecialchars($user['stu_college'] ?? '-'); ?></div>
                             </div>
                             <div class="row mb-0">
                                 <div class="col-sm-3 text-muted">Course:</div>
