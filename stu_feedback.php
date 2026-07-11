@@ -29,7 +29,15 @@ $student_program = $student['stu_program'];
 $student_college = $student['stu_college'];
 $stmt->close();
 
-if (isset($_POST['post_feedback'])) {
+// Check if already submitted
+$check_stmt = $conn->prepare("SELECT id FROM feedback WHERE stu_id = ?");
+$check_stmt->bind_param("i", $stu_id);
+$check_stmt->execute();
+$check_res = $check_stmt->get_result();
+$has_submitted = ($check_res->num_rows > 0);
+$check_stmt->close();
+
+if (isset($_POST['post_feedback']) && !$has_submitted) {
     $feedback_text = trim($_POST['feedback_text']);
     
     if (empty($feedback_text)) {
@@ -40,6 +48,7 @@ if (isset($_POST['post_feedback'])) {
         
         if ($insert->execute()) {
             $message = "<div class='alert alert-success mt-3'>Thank you! Your feedback has been submitted to the admin.</div>";
+            $has_submitted = true; // Update state after successful submission
         } else {
             $message = "<div class='alert alert-danger mt-3'>Submission failed!</div>";
         }
@@ -78,31 +87,40 @@ if (isset($_POST['post_feedback'])) {
             <!-- SECTION: FEEDBACK -->
             <div id="feedbackSection" class="mt-5">
                 <h4>Submit Feedback</h4>
-                <div class="card p-4 shadow card-custom">
-                    <form method="post">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Name</label>
-                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($student_name); ?>" readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">College</label>
-                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($student_college); ?>" readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Program</label>
-                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($student_program); ?>" readonly>
-                            </div>
+                
+                <?php if (!empty($message)) echo $message; ?>
+
+                <div class="card p-4 shadow card-custom mt-3">
+                    <?php if ($has_submitted): ?>
+                        <div class="text-center py-5">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                            <h3 class="mt-3 text-success fw-bold">Feedback Submitted</h3>
+                            <p class="text-muted fs-5 mt-2">You have already submitted your feedback. Thank you for helping us improve!</p>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Your Feedback</label>
-                            <textarea class="form-control" name="feedback_text" rows="5" required placeholder="Write your experience..."></textarea>
-                        </div>
-                        
-                        <button class="btn btn-primary" type="submit" name="post_feedback">Post Feedback</button>
-                    </form>
-                    <?php if (!empty($message)) echo $message; ?>
+                    <?php else: ?>
+                        <form method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($student_name); ?>" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">College</label>
+                                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($student_college); ?>" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Program</label>
+                                    <input type="text" class="form-control" value="<?php echo htmlspecialchars($student_program); ?>" readonly>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Your Feedback</label>
+                                <textarea class="form-control" name="feedback_text" rows="5" required placeholder="Write your experience..."></textarea>
+                            </div>
+                            <button type="submit" name="post_feedback" class="btn btn-primary">Submit Feedback</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
 
