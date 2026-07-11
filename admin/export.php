@@ -141,6 +141,36 @@ if ($type === 'students') {
     $result = $conn->query($sql);
     $filename = "year_wise_summary_export.xls";
 
+} elseif ($type === 'approvals') {
+
+    $filter_type = isset($_GET['type_filter']) ? $_GET['type_filter'] : '';
+    $filter_name = isset($_GET['name']) ? $_GET['name'] : '';
+    $filter_status = isset($_GET['status']) ? $_GET['status'] : '';
+
+    $sql = "SELECT 
+                s.app_id, s.app_status,
+                stu.stu_fname, stu.stu_lname,
+                ss.ss_name, ss.ss_type, ss.ss_amount,
+                (SELECT COUNT(*) FROM scholarship WHERE ss_id = ss.ss_id AND app_status = 'Approved') AS total_beneficiary
+            FROM scholarship s
+            JOIN student_master stu ON s.stu_id = stu.stu_id
+            JOIN ss_master ss ON s.ss_id = ss.ss_id
+            WHERE 1=1";
+
+    if (!empty($filter_type)) {
+        $sql .= " AND ss.ss_type = '" . $conn->real_escape_string($filter_type) . "'";
+    }
+    if (!empty($filter_name)) {
+        $sql .= " AND ss.ss_name = '" . $conn->real_escape_string($filter_name) . "'";
+    }
+    if (!empty($filter_status)) {
+        $sql .= " AND s.app_status = '" . $conn->real_escape_string($filter_status) . "'";
+    }
+
+    $sql .= " ORDER BY s.app_id DESC";
+    $result = $conn->query($sql);
+    $filename = "applications_export.xls";
+
 } else {
     // No valid type given
     die("Invalid export type.");
@@ -252,6 +282,31 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_amount']); ?></td>
+            <td><?php echo htmlspecialchars($row['app_status']); ?></td>
+        </tr>
+        <?php } ?>
+    <?php } elseif ($type === 'approvals') { ?>
+        <tr>
+            <th>Student Name</th>
+            <th>Type of Scholarship</th>
+            <th>Amount of Scholarship</th>
+            <th>Name of Scholarship</th>
+            <th>Total Amount</th>
+            <th>Total Beneficiary</th>
+            <th>Status</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()) { 
+            $total_beneficiary = $row['total_beneficiary'];
+            $total_amount = $total_beneficiary * $row['ss_amount'];
+            $student_name = trim($row['stu_fname'] . ' ' . $row['stu_lname']);
+        ?>
+        <tr>
+            <td><?php echo htmlspecialchars($student_name); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_type']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_amount']); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
+            <td><?php echo htmlspecialchars($total_amount); ?></td>
+            <td><?php echo htmlspecialchars($total_beneficiary); ?></td>
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
         </tr>
         <?php } ?>

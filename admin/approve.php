@@ -13,9 +13,16 @@ if (isset($_GET['action']) && isset($_GET['app_id'])) {
         $conn->query("UPDATE scholarship SET app_status = 'Rejected' WHERE app_id = $app_id");
     }
     
-    header("Location: approve.php");
+    $query_params = $_GET;
+    unset($query_params['action'], $query_params['app_id']);
+    $query_string = http_build_query($query_params);
+    header("Location: approve.php" . ($query_string ? '?' . $query_string : ''));
     exit();
 }
+
+$filter_type = isset($_GET['type']) ? $_GET['type'] : '';
+$filter_name = isset($_GET['name']) ? $_GET['name'] : '';
+$filter_status = isset($_GET['status']) ? $_GET['status'] : '';
 
 $sql = "SELECT 
             s.app_id, s.app_status,
@@ -25,7 +32,19 @@ $sql = "SELECT
         FROM scholarship s
         JOIN student_master stu ON s.stu_id = stu.stu_id
         JOIN ss_master ss ON s.ss_id = ss.ss_id
-        ORDER BY s.app_id DESC";
+        WHERE 1=1";
+
+if (!empty($filter_type)) {
+    $sql .= " AND ss.ss_type = '" . $conn->real_escape_string($filter_type) . "'";
+}
+if (!empty($filter_name)) {
+    $sql .= " AND ss.ss_name = '" . $conn->real_escape_string($filter_name) . "'";
+}
+if (!empty($filter_status)) {
+    $sql .= " AND s.app_status = '" . $conn->real_escape_string($filter_status) . "'";
+}
+
+$sql .= " ORDER BY s.app_id DESC";
 $result = $conn->query($sql);
 
 ?>
@@ -48,6 +67,51 @@ $result = $conn->query($sql);
         <div class="col-md-9 col-lg-10 p-4 content-area">
 
             <h3 class="mb-3">Approve or Reject Applications</h3>
+
+            <div class="card p-3 mb-4 shadow-sm">
+                <form method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Scholarship Type</label>
+                        <select name="type" class="form-select">
+                            <option value="">All Types</option>
+                            <?php 
+                                $types = $conn->query("SELECT DISTINCT ss_type FROM ss_master WHERE ss_type IS NOT NULL AND ss_type != '' ORDER BY ss_type ASC");
+                                while ($row = $types->fetch_assoc()) {
+                                    $sel = ($filter_type == $row['ss_type']) ? 'selected' : '';
+                                    echo "<option value='".htmlspecialchars($row['ss_type'])."' $sel>".htmlspecialchars($row['ss_type'])."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Scholarship Name</label>
+                        <select name="name" class="form-select">
+                            <option value="">All Names</option>
+                            <?php 
+                                $names = $conn->query("SELECT DISTINCT ss_name FROM ss_master WHERE ss_name IS NOT NULL AND ss_name != '' ORDER BY ss_name ASC");
+                                while ($row = $names->fetch_assoc()) {
+                                    $sel = ($filter_name == $row['ss_name']) ? 'selected' : '';
+                                    echo "<option value='".htmlspecialchars($row['ss_name'])."' $sel>".htmlspecialchars($row['ss_name'])."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Application Status</label>
+                        <select name="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Applied" <?php echo ($filter_status == 'Applied') ? 'selected' : ''; ?>>Pending</option>
+                            <option value="Approved" <?php echo ($filter_status == 'Approved') ? 'selected' : ''; ?>>Approved</option>
+                            <option value="Rejected" <?php echo ($filter_status == 'Rejected') ? 'selected' : ''; ?>>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 d-flex gap-2 justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary px-4">Filter</button>
+                        <a href="approve.php" class="btn btn-secondary px-4">Reset</a>
+                        <a href="export.php?type=approvals&type_filter=<?php echo urlencode($filter_type); ?>&name=<?php echo urlencode($filter_name); ?>&status=<?php echo urlencode($filter_status); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
+                    </div>
+                </form>
+            </div>
 
             <table class="table table-striped table-hover table-bordered align-middle">
                 <thead class="table-dark">
