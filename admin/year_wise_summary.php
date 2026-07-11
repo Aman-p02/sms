@@ -51,7 +51,6 @@ $campuses = $conn->query("SELECT campus_name as stu_campus FROM campus ORDER BY 
 $colleges = $conn->query("SELECT college_name as stu_college FROM college ORDER BY college_name ASC");
 $courses = $conn->query("SELECT prog_name as stu_program FROM program ORDER BY prog_name ASC");
 $scholarships = $conn->query("SELECT DISTINCT ss_name FROM ss_master WHERE ss_name IS NOT NULL AND ss_name != '' ORDER BY ss_name ASC");
-$amounts = $conn->query("SELECT DISTINCT ss_amount FROM ss_master WHERE ss_amount IS NOT NULL AND ss_amount > 0 ORDER BY ss_amount ASC");
 
 // Get selected filters
 $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
@@ -59,7 +58,6 @@ $filter_campus = isset($_GET['campus']) ? $_GET['campus'] : '';
 $filter_college = isset($_GET['college']) ? $_GET['college'] : '';
 $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
 $filter_scholarship = isset($_GET['scholarship']) ? $_GET['scholarship'] : '';
-$filter_amount = isset($_GET['amount']) ? $_GET['amount'] : '';
 
 // Build dynamic query
 $sql = "SELECT s.stu_fname, s.stu_lname, s.stu_campus, s.stu_college, s.stu_program, 
@@ -83,9 +81,6 @@ if (!empty($filter_course)) {
 }
 if (!empty($filter_scholarship)) {
     $sql .= " AND sm.ss_name = '" . $conn->real_escape_string($filter_scholarship) . "'";
-}
-if (!empty($filter_amount)) {
-    $sql .= " AND sm.ss_amount = '" . $conn->real_escape_string($filter_amount) . "'";
 }
 
 $sql .= " ORDER BY sm.ss_year DESC, s.stu_fname ASC";
@@ -112,7 +107,7 @@ $result = $conn->query($sql);
             <div class="card p-3 mb-4 shadow-sm">
                 <form method="GET" class="row g-3 align-items-end">
                     
-                    <div class="col-md-2">
+                    <div class="col-md">
                         <label class="form-label fw-bold">Course</label>
                         <select name="course" class="form-select">
                             <option value="">All Courses</option>
@@ -122,7 +117,7 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md">
                         <label class="form-label fw-bold">Year</label>
                         <select name="year" class="form-select">
                             <option value="">All Years</option>
@@ -132,7 +127,7 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md">
                         <label class="form-label fw-bold">Campus</label>
                         <select name="campus" class="form-select">
                             <option value="">All Campuses</option>
@@ -142,7 +137,7 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md">
                         <label class="form-label fw-bold">College</label>
                         <select name="college" class="form-select">
                             <option value="">All Colleges</option>
@@ -152,7 +147,7 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md">
                         <label class="form-label fw-bold">Scholarship Name</label>
                         <select name="scholarship" class="form-select">
                             <option value="">All Scholarships</option>
@@ -162,19 +157,9 @@ $result = $conn->query($sql);
                         </select>
                     </div>
 
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">Amount</label>
-                        <select name="amount" class="form-select">
-                            <option value="">All Amounts</option>
-                            <?php while ($row = $amounts->fetch_assoc()) { ?>
-                                <option value="<?php echo htmlspecialchars($row['ss_amount']); ?>" <?php if($filter_amount == $row['ss_amount']) echo 'selected'; ?>><?php echo htmlspecialchars($row['ss_amount']); ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-
                     <div class="col-md-12 d-flex gap-2 justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary px-4">Filter</button>
-                        <a href="export.php?type=year_wise_summary&year=<?php echo urlencode($filter_year); ?>&campus=<?php echo urlencode($filter_campus); ?>&college=<?php echo urlencode($filter_college); ?>&course=<?php echo urlencode($filter_course); ?>&scholarship=<?php echo urlencode($filter_scholarship); ?>&amount=<?php echo urlencode($filter_amount); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
+                        <a href="export.php?type=year_wise_summary&year=<?php echo urlencode($filter_year); ?>&campus=<?php echo urlencode($filter_campus); ?>&college=<?php echo urlencode($filter_college); ?>&course=<?php echo urlencode($filter_course); ?>&scholarship=<?php echo urlencode($filter_scholarship); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
                     </div>
                 </form>
             </div>

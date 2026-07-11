@@ -41,12 +41,30 @@ if ($type === 'students') {
 
 } elseif ($type === 'scholarships') {
 
-    $sql = "SELECT * FROM `ss_master` 
-            WHERE `ss_name` LIKE '%$search%' 
-            OR `ss_type` LIKE '%$search%' 
-            OR `ss_year` LIKE '%$search%'
-            OR `ss_amount` LIKE '%$search%'
-            ORDER BY ss_id ASC";
+    $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
+    $filter_name = isset($_GET['name']) ? $_GET['name'] : '';
+    $filter_type = isset($_GET['type_filter']) ? $_GET['type_filter'] : '';
+
+    $sql = "SELECT * FROM `ss_master` WHERE 1=1";
+    
+    if (!empty($search)) {
+        $safe_search = $conn->real_escape_string($search);
+        $sql .= " AND (`ss_name` LIKE '%$safe_search%' 
+                  OR `ss_type` LIKE '%$safe_search%' 
+                  OR `ss_year` LIKE '%$safe_search%'
+                  OR `ss_amount` LIKE '%$safe_search%')";
+    }
+    if (!empty($filter_year)) {
+        $sql .= " AND ss_year = '" . $conn->real_escape_string($filter_year) . "'";
+    }
+    if (!empty($filter_name)) {
+        $sql .= " AND ss_name = '" . $conn->real_escape_string($filter_name) . "'";
+    }
+    if (!empty($filter_type)) {
+        $sql .= " AND ss_type = '" . $conn->real_escape_string($filter_type) . "'";
+    }
+    
+    $sql .= " ORDER BY ss_id ASC";
     $result = $conn->query($sql);
     $filename = "scholarships_export.xls";
 

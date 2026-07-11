@@ -19,14 +19,31 @@ if (isset($_GET['order'])) {
     $order = $_GET['order'];
 }
 
+// Filters
+$filter_year = isset($_GET['year']) ? $_GET['year'] : '';
+$filter_name = isset($_GET['name']) ? $_GET['name'] : '';
+$filter_type = isset($_GET['type']) ? $_GET['type'] : '';
+
 // Query
-$sql = "SELECT * FROM `ss_master` 
-        WHERE `ss_name` LIKE '%$search%' 
-        OR `ss_type` LIKE '%$search%' 
-        OR `ss_year` LIKE '%$search%'
-        OR `ss_amount` LIKE '%$search%'
-        ORDER BY $order_by $order";
-/*echo $sql;*/
+$sql = "SELECT * FROM `ss_master` WHERE 1=1";
+
+if (!empty($search)) {
+    $sql .= " AND (`ss_name` LIKE '%$search%' 
+              OR `ss_type` LIKE '%$search%' 
+              OR `ss_year` LIKE '%$search%'
+              OR `ss_amount` LIKE '%$search%')";
+}
+if (!empty($filter_year)) {
+    $sql .= " AND ss_year = '" . $conn->real_escape_string($filter_year) . "'";
+}
+if (!empty($filter_name)) {
+    $sql .= " AND ss_name = '" . $conn->real_escape_string($filter_name) . "'";
+}
+if (!empty($filter_type)) {
+    $sql .= " AND ss_type = '" . $conn->real_escape_string($filter_type) . "'";
+}
+
+$sql .= " ORDER BY $order_by $order";
 $result = $conn->query($sql);
 ?>
 
@@ -58,22 +75,55 @@ $result = $conn->query($sql);
            
             
             
-            <!------------- DISPLAY STUDENTS -------------------->
-            <form method="GET" class="row mb-3">
-    <!-- Search -->
-<form method="GET" class="mb-3">
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Search..." value="<?php echo $search; ?>">
-        </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary">Search</button>
-        </div>
-        <div class="col-md-2">
-            <a href="export.php?type=scholarships&search=<?php echo urlencode($search); ?>" class="btn btn-success">Export to Excel</a>
-        </div>
-    </div>
-</form>
+            <!------------- DISPLAY SCHOLARSHIPS -------------------->
+            <form method="GET" class="mb-4 card p-3 shadow-sm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Scholarship Year</label>
+                        <select name="year" class="form-select">
+                            <option value="">All Years</option>
+                            <?php 
+                                $years = $conn->query("SELECT DISTINCT ss_year FROM ss_master WHERE ss_year IS NOT NULL AND ss_year != '' ORDER BY ss_year DESC");
+                                while ($row = $years->fetch_assoc()) {
+                                    $sel = ($filter_year == $row['ss_year']) ? 'selected' : '';
+                                    echo "<option value='".htmlspecialchars($row['ss_year'])."' $sel>".htmlspecialchars($row['ss_year'])."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Scholarship Name</label>
+                        <select name="name" class="form-select">
+                            <option value="">All Names</option>
+                            <?php 
+                                $names = $conn->query("SELECT DISTINCT ss_name FROM ss_master WHERE ss_name IS NOT NULL AND ss_name != '' ORDER BY ss_name ASC");
+                                while ($row = $names->fetch_assoc()) {
+                                    $sel = ($filter_name == $row['ss_name']) ? 'selected' : '';
+                                    echo "<option value='".htmlspecialchars($row['ss_name'])."' $sel>".htmlspecialchars($row['ss_name'])."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Scholarship Type</label>
+                        <select name="type" class="form-select">
+                            <option value="">All Types</option>
+                            <?php 
+                                $types = $conn->query("SELECT DISTINCT ss_type FROM ss_master WHERE ss_type IS NOT NULL AND ss_type != '' ORDER BY ss_type ASC");
+                                while ($row = $types->fetch_assoc()) {
+                                    $sel = ($filter_type == $row['ss_type']) ? 'selected' : '';
+                                    echo "<option value='".htmlspecialchars($row['ss_type'])."' $sel>".htmlspecialchars($row['ss_type'])."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-12 d-flex gap-2 justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary px-4">Filter</button>
+                        <a href="view_scholarships.php" class="btn btn-secondary px-4">Reset</a>
+                        <a href="export.php?type=scholarships&search=<?php echo urlencode($search); ?>&year=<?php echo urlencode($filter_year); ?>&name=<?php echo urlencode($filter_name); ?>&type_filter=<?php echo urlencode($filter_type); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
+                    </div>
+                </div>
+            </form>
 
 <!-- Table -->
 <table class="table table-bordered table-striped">
