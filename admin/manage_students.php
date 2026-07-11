@@ -2,11 +2,54 @@
 require_once 'session.php';
 include "../db.php";
 
+function getShortCourseName($fullName) {
+    $map = ['IT' => 'IT'];
+    $upper = strtoupper(trim($fullName));
+    if (isset($map[$upper])) return $map[$upper];
+
+    $name = $upper;
+    $prefix = '';
+    
+    if (strpos($name, 'BACHELOR OF SCIENCE IN') !== false) {
+        $prefix = 'BS';
+        $name = str_replace('BACHELOR OF SCIENCE IN', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF ARTS IN') !== false || strpos($name, 'BACHELOR OF ARTS MAJOR IN') !== false) {
+        $prefix = 'BA';
+        $name = str_replace(['BACHELOR OF ARTS IN', 'BACHELOR OF ARTS MAJOR IN'], '', $name);
+    } elseif (strpos($name, 'BACHELOR OF ELEMENTARY EDUCATION') !== false) {
+        $prefix = 'BEEd';
+        $name = str_replace('BACHELOR OF ELEMENTARY EDUCATION', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF SECONDARY EDUCATION') !== false) {
+        $prefix = 'BSEd';
+        $name = str_replace('BACHELOR OF SECONDARY EDUCATION', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF PUBLIC ADMINISTRATION') !== false) {
+        return 'BPA';
+    } elseif (strpos($name, 'BACHELOR OF') !== false) {
+        $prefix = 'B';
+        $name = str_replace('BACHELOR OF', '', $name);
+    }
+    
+    $words = explode(' ', str_replace(['/', '-', '&'], ' ', $name));
+    $skip = ['AND', 'IN', 'OF', 'THE', 'MAJOR'];
+    $acro = '';
+    foreach($words as $w) {
+        $w = trim($w);
+        if(empty($w) || in_array($w, $skip)) continue;
+        $acro .= $w[0];
+    }
+    
+    if ($prefix !== '') {
+        return empty($acro) ? $prefix : $prefix . ' (' . $acro . ')';
+    }
+    
+    return empty($acro) ? $fullName : $acro;
+}
+
 // Fetch distinct values for filters
-$campuses = $conn->query("SELECT DISTINCT stu_campus FROM student_master WHERE stu_campus IS NOT NULL AND stu_campus != '' ORDER BY stu_campus ASC");
-$colleges = $conn->query("SELECT DISTINCT stu_college FROM student_master WHERE stu_college IS NOT NULL AND stu_college != '' ORDER BY stu_college ASC");
+$campuses = $conn->query("SELECT campus_name as stu_campus FROM campus ORDER BY campus_name ASC");
+$colleges = $conn->query("SELECT college_name as stu_college FROM college ORDER BY college_name ASC");
 $years = $conn->query("SELECT DISTINCT stu_year_level FROM student_master WHERE stu_year_level IS NOT NULL AND stu_year_level != '' ORDER BY stu_year_level ASC");
-$courses = $conn->query("SELECT DISTINCT stu_program FROM student_master WHERE stu_program IS NOT NULL AND stu_program != '' ORDER BY stu_program ASC");
+$courses = $conn->query("SELECT prog_name as stu_program FROM program ORDER BY prog_name ASC");
 
 // Filters
 $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -80,6 +123,14 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
             <!------------- DISPLAY STUDENTS -------------------->
 <form method="GET" class="mb-3">
     <div class="row g-2 mb-2">
+        <div class="col-md-5">
+            <select name="course" class="form-select">
+                <option value="">All Courses</option>
+                <?php while($row = $courses->fetch_assoc()){ ?>
+                    <option value="<?php echo htmlspecialchars($row['stu_program']); ?>" <?php if($filter_course==$row['stu_program']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_program']); ?></option>
+                <?php } ?>
+            </select>
+        </div>
         <div class="col-md-2">
             <select name="campus" class="form-select">
                 <option value="">All Campuses</option>
@@ -101,14 +152,6 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
                 <option value="">All Years</option>
                 <?php while($row = $years->fetch_assoc()){ ?>
                     <option value="<?php echo htmlspecialchars($row['stu_year_level']); ?>" <?php if($filter_year==$row['stu_year_level']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_year_level']); ?></option>
-                <?php } ?>
-            </select>
-        </div>
-        <div class="col-md-5">
-            <select name="course" class="form-select">
-                <option value="">All Courses</option>
-                <?php while($row = $courses->fetch_assoc()){ ?>
-                    <option value="<?php echo htmlspecialchars($row['stu_program']); ?>" <?php if($filter_course==$row['stu_program']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_program']); ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -158,7 +201,7 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars(getShortCourseName($row['stu_program'])); ?></td>
             <td><?php echo htmlspecialchars($row['stu_year_level']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_email']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_city']); ?></td>

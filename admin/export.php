@@ -8,12 +8,34 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : "";
 
 if ($type === 'students') {
+    $filter_campus = isset($_GET['campus']) ? $_GET['campus'] : '';
+    $filter_college = isset($_GET['college']) ? $_GET['college'] : '';
+    $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
+    $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
 
-    $sql = "SELECT * FROM `student_master` 
-            WHERE `stu_fname` LIKE '%$search%' 
-            OR `stu_email` LIKE '%$search%' 
-            OR `stu_enroll` LIKE '%$search%'
-            ORDER BY stu_id ASC";
+    $sql = "SELECT * FROM `student_master` WHERE 1=1";
+    
+    if (!empty($search)) {
+        $safe_search = $conn->real_escape_string($search);
+        $sql .= " AND (`stu_fname` LIKE '%$safe_search%' 
+                  OR `stu_lname` LIKE '%$safe_search%'
+                  OR `stu_email` LIKE '%$safe_search%' 
+                  OR `stu_enroll` LIKE '%$safe_search%')";
+    }
+    if (!empty($filter_campus)) {
+        $sql .= " AND stu_campus = '" . $conn->real_escape_string($filter_campus) . "'";
+    }
+    if (!empty($filter_college)) {
+        $sql .= " AND stu_college = '" . $conn->real_escape_string($filter_college) . "'";
+    }
+    if (!empty($filter_year)) {
+        $sql .= " AND stu_year_level = '" . $conn->real_escape_string($filter_year) . "'";
+    }
+    if (!empty($filter_course)) {
+        $sql .= " AND stu_program = '" . $conn->real_escape_string($filter_course) . "'";
+    }
+    
+    $sql .= " ORDER BY stu_id ASC";
     $result = $conn->query($sql);
     $filename = "students_export.xls";
 
@@ -137,9 +159,12 @@ header("Expires: 0");
             <th>Enrollment No</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Campus</th>
+            <th>College</th>
+            <th>Course</th>
+            <th>Year Level</th>
             <th>Email</th>
             <th>Gender</th>
-            <th>Year Level</th>
             <th>GPA</th>
             <th>City</th>
         </tr>
@@ -149,9 +174,12 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['stu_enroll']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_lname']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_year_level']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_email']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_gender']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_year_level']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_gpa']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_city']); ?></td>
         </tr>

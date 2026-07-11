@@ -208,7 +208,7 @@ CREATE TABLE `student_master` (
   `stu_dob` date DEFAULT NULL,
   `stu_email` varchar(50) DEFAULT NULL,
   `stu_contact` varchar(15) DEFAULT NULL,
-  `stu_program` varchar(50) DEFAULT NULL,
+  `stu_program` varchar(200) DEFAULT NULL,
   `stu_year_level` varchar(10) DEFAULT NULL,
   `stu_campus` varchar(50) DEFAULT NULL,
   `stu_cor` varchar(100) DEFAULT NULL,

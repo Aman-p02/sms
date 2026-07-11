@@ -3,52 +3,53 @@ require_once 'session.php';
 include "../db.php";
 
 function getShortCourseName($fullName) {
-    $map = [
-        'BACHELOR OF SCIENCE IN CIVIL ENGINEERING' => 'BS (CE)',
-        'BACHELOR OF SCIENCE IN COMPUTER SCIENCE MAJOR IN C' => 'BS (CS)',
-        'BACHELOR OF ARTS MAJOR IN ECONOMICS' => 'BA (E)',
-        'BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJ' => 'BS (BA)',
-        'IT' => 'IT'
-    ];
+    $map = ['IT' => 'IT'];
     $upper = strtoupper(trim($fullName));
-    if (isset($map[$upper])) {
-        return $map[$upper];
-    }
-    
-    $prefix = '';
+    if (isset($map[$upper])) return $map[$upper];
+
     $name = $upper;
+    $prefix = '';
+    
     if (strpos($name, 'BACHELOR OF SCIENCE IN') !== false) {
         $prefix = 'BS';
         $name = str_replace('BACHELOR OF SCIENCE IN', '', $name);
-    } elseif (strpos($name, 'BACHELOR OF ARTS IN') !== false) {
+    } elseif (strpos($name, 'BACHELOR OF ARTS IN') !== false || strpos($name, 'BACHELOR OF ARTS MAJOR IN') !== false) {
         $prefix = 'BA';
-        $name = str_replace('BACHELOR OF ARTS IN', '', $name);
-    } elseif (strpos($name, 'BACHELOR OF ARTS MAJOR IN') !== false) {
-        $prefix = 'BA';
-        $name = str_replace('BACHELOR OF ARTS MAJOR IN', '', $name);
+        $name = str_replace(['BACHELOR OF ARTS IN', 'BACHELOR OF ARTS MAJOR IN'], '', $name);
+    } elseif (strpos($name, 'BACHELOR OF ELEMENTARY EDUCATION') !== false) {
+        $prefix = 'BEEd';
+        $name = str_replace('BACHELOR OF ELEMENTARY EDUCATION', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF SECONDARY EDUCATION') !== false) {
+        $prefix = 'BSEd';
+        $name = str_replace('BACHELOR OF SECONDARY EDUCATION', '', $name);
+    } elseif (strpos($name, 'BACHELOR OF PUBLIC ADMINISTRATION') !== false) {
+        return 'BPA';
+    } elseif (strpos($name, 'BACHELOR OF') !== false) {
+        $prefix = 'B';
+        $name = str_replace('BACHELOR OF', '', $name);
+    }
+    
+    $words = explode(' ', str_replace(['/', '-', '&'], ' ', $name));
+    $skip = ['AND', 'IN', 'OF', 'THE', 'MAJOR'];
+    $acro = '';
+    foreach($words as $w) {
+        $w = trim($w);
+        if(empty($w) || in_array($w, $skip)) continue;
+        $acro .= $w[0];
     }
     
     if ($prefix !== '') {
-        $words = explode(' ', $name);
-        $acronym = '';
-        $skipWords = ['AND', 'IN', 'OF', 'THE', 'MAJOR'];
-        foreach ($words as $w) {
-            $w = trim($w);
-            if (empty($w)) continue;
-            if (in_array($w, $skipWords)) continue;
-            $acronym .= $w[0];
-        }
-        return $prefix . ' (' . $acronym . ')';
+        return empty($acro) ? $prefix : $prefix . ' (' . $acro . ')';
     }
     
-    return $fullName;
+    return empty($acro) ? $fullName : $acro;
 }
 
 // Fetch distinct values for filters
 $years = $conn->query("SELECT DISTINCT ss_year FROM ss_master WHERE ss_year IS NOT NULL AND ss_year != '' ORDER BY ss_year DESC");
-$campuses = $conn->query("SELECT DISTINCT stu_campus FROM student_master WHERE stu_campus IS NOT NULL AND stu_campus != '' ORDER BY stu_campus ASC");
-$colleges = $conn->query("SELECT DISTINCT stu_college FROM student_master WHERE stu_college IS NOT NULL AND stu_college != '' ORDER BY stu_college ASC");
-$courses = $conn->query("SELECT DISTINCT stu_program FROM student_master WHERE stu_program IS NOT NULL AND stu_program != '' ORDER BY stu_program ASC");
+$campuses = $conn->query("SELECT campus_name as stu_campus FROM campus ORDER BY campus_name ASC");
+$colleges = $conn->query("SELECT college_name as stu_college FROM college ORDER BY college_name ASC");
+$courses = $conn->query("SELECT prog_name as stu_program FROM program ORDER BY prog_name ASC");
 $scholarships = $conn->query("SELECT DISTINCT ss_name FROM ss_master WHERE ss_name IS NOT NULL AND ss_name != '' ORDER BY ss_name ASC");
 $amounts = $conn->query("SELECT DISTINCT ss_amount FROM ss_master WHERE ss_amount IS NOT NULL AND ss_amount > 0 ORDER BY ss_amount ASC");
 
@@ -112,6 +113,16 @@ $result = $conn->query($sql);
                 <form method="GET" class="row g-3 align-items-end">
                     
                     <div class="col-md-2">
+                        <label class="form-label fw-bold">Course</label>
+                        <select name="course" class="form-select">
+                            <option value="">All Courses</option>
+                            <?php while ($row = $courses->fetch_assoc()) { ?>
+                                <option value="<?php echo htmlspecialchars($row['stu_program']); ?>" <?php if($filter_course == $row['stu_program']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_program']); ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
                         <label class="form-label fw-bold">Year</label>
                         <select name="year" class="form-select">
                             <option value="">All Years</option>
@@ -137,16 +148,6 @@ $result = $conn->query($sql);
                             <option value="">All Colleges</option>
                             <?php while ($row = $colleges->fetch_assoc()) { ?>
                                 <option value="<?php echo htmlspecialchars($row['stu_college']); ?>" <?php if($filter_college == $row['stu_college']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_college']); ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">Course</label>
-                        <select name="course" class="form-select">
-                            <option value="">All Courses</option>
-                            <?php while ($row = $courses->fetch_assoc()) { ?>
-                                <option value="<?php echo htmlspecialchars($row['stu_program']); ?>" <?php if($filter_course == $row['stu_program']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_program']); ?></option>
                             <?php } ?>
                         </select>
                     </div>
