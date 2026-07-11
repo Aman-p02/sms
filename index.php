@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['stu_id'] = $user['stu_id'];
             $_SESSION['stu_enroll'] = $user['stu_enroll'];
             $_SESSION['stu_fname'] = $user['stu_fname'];
-            if (isset($_REQUEST['redirect']) && $_REQUEST['redirect'] == 'apply') {
+            if (isset($_REQUEST['redirect']) && $_REQUEST['redirect'] == 'apply' && $user['complete'] == 'Yes') {
                 header("Location: apply_scholarship.php");
             } else {
                 header("Location: stu_profile.php");
