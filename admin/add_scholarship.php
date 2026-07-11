@@ -1,4 +1,5 @@
-<?php include "../db.php";
+<?php require_once 'session.php';
+include "../db.php";
 
 $message = "";
 

@@ -2,7 +2,7 @@
 
 include "db.php";
 
-session_start();
+require_once 'session.php';
 
 // Prevent browser caching
 header( "Cache-Control: no-cache, no-store, must-revalidate" );

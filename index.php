@@ -6,6 +6,15 @@ include "db.php";
 
 $message = "";
 
+// Fetch latest 5 scholarships for the Notice Board
+$notices = [];
+$notice_query = $conn->query("SELECT ss_name, ss_start, ss_end FROM ss_master ORDER BY ss_id DESC LIMIT 5");
+if ($notice_query) {
+    while($row = $notice_query->fetch_assoc()) {
+        $notices[] = $row;
+    }
+}
+
 if (isset($_POST['submit'])) {
 
     $stu_enroll = trim($_POST['stu_enroll']);
@@ -53,7 +62,6 @@ if (isset($_POST['submit'])) {
         <div class="container">
             <h1 class="display-5 fw-bold">Scholarship Management System</h1>
             <p class="lead mt-3">Digitizing scholarship applications, verification, evaluation, and beneficiary management.</p>
-            <!--<a href="#apply" class="btn btn-primary btn-lg mt-3">Apply Now</a>-->
         </div>
     </section>
 
@@ -111,6 +119,31 @@ if (isset($_POST['submit'])) {
     <!-- Features Section -->
     <section id="features" class="py-5 bg-light">
         <div class="container">
+            <!-- Notice Board Rectangle -->
+            <?php if (!empty($notices)): ?>
+            <div class="card shadow-sm border-0 mb-5">
+                <div class="card-header bg-danger text-white fw-bold fs-5">
+                    📢 NOTICE BOARD - LATEST SCHOLARSHIPS
+                </div>
+                <div class="card-body p-0">
+                    <marquee behavior="scroll" direction="up" height="200" onmouseover="this.stop();" onmouseout="this.start();" class="p-3">
+                        <ul class="list-unstyled mb-0">
+                        <?php foreach($notices as $notice): ?>
+                            <li class="mb-4 border-bottom pb-3">
+                                <h5 class="fw-bold text-primary mb-2">✨ <?php echo htmlspecialchars($notice['ss_name']); ?></h5>
+                                <div class="mb-2">
+                                    <span class="badge bg-light text-dark border p-2 me-2">Start: <?php echo date("d M Y", strtotime($notice['ss_start'])); ?></span>
+                                    <span class="badge bg-warning text-dark border p-2">End: <?php echo date("d M Y", strtotime($notice['ss_end'])); ?></span>
+                                </div>
+                                <div class="text-success fw-semibold">👉 <em>Login to Student Portal to apply online!</em></div>
+                            </li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </marquee>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <h2 class="fw-bold">Key Features</h2>
             <div class="row mt-4">
                 <div class="col-md-4 mb-3">

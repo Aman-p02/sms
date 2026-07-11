@@ -1,4 +1,5 @@
 <?php
+require_once 'session.php';
 include "../db.php";
 ?>
 <!DOCTYPE html>

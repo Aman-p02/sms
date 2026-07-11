@@ -1,4 +1,5 @@
 <?php
+require_once 'session.php';
 include "../db.php";
 
 $ss_id = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';

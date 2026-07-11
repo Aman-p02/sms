@@ -10,7 +10,7 @@
 
 <?php
     
-session_start();
+require_once 'session.php';
 include "db.php";
 
 // Protect page

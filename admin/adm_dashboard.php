@@ -1,4 +1,5 @@
 <?php
+require_once 'session.php';
 include "../db.php";
 
 $amount_res = $conn->query("SELECT SUM(sm.ss_amount) as total_amount FROM scholarship sc INNER JOIN ss_master sm ON sc.ss_id = sm.ss_id WHERE sc.app_status = 'Approved'");
