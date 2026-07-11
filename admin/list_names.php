@@ -48,6 +48,16 @@ $ss_id = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
 $ss_name = isset($_GET['ss_name']) ? $_GET['ss_name'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $gender_filter = isset($_GET['gender_filter']) ? $_GET['gender_filter'] : '';
+$enroll_filter = isset($_GET['enroll_filter']) ? $_GET['enroll_filter'] : '';
+$course_filter = isset($_GET['course_filter']) ? $_GET['course_filter'] : '';
+$campus_filter = isset($_GET['campus_filter']) ? $_GET['campus_filter'] : '';
+$college_filter = isset($_GET['college_filter']) ? $_GET['college_filter'] : '';
+$year_filter = isset($_GET['year_filter']) ? $_GET['year_filter'] : '';
+
+$courses = $conn->query("SELECT DISTINCT stu_program FROM student_master WHERE stu_program IS NOT NULL AND stu_program != '' ORDER BY stu_program ASC");
+$campuses = $conn->query("SELECT DISTINCT stu_campus FROM student_master WHERE stu_campus IS NOT NULL AND stu_campus != '' ORDER BY stu_campus ASC");
+$colleges = $conn->query("SELECT DISTINCT stu_college FROM student_master WHERE stu_college IS NOT NULL AND stu_college != '' ORDER BY stu_college ASC");
+$years = $conn->query("SELECT DISTINCT stu_year_level FROM student_master WHERE stu_year_level IS NOT NULL AND stu_year_level != '' ORDER BY stu_year_level ASC");
 
 if (empty($ss_id)) {
     header("Location: view_scholarships.php");
@@ -56,17 +66,31 @@ if (empty($ss_id)) {
 
 /*INNER JOIN*/
 
-$sql = "SELECT scholarship.ss_id, student_master.stu_enroll, student_master.stu_id, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
+$sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_enroll, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
 FROM scholarship
 INNER JOIN student_master ON scholarship.stu_id=student_master.stu_id 
 INNER JOIN ss_master ON scholarship.ss_id=ss_master.ss_id
 Where scholarship.ss_id = '".$conn->real_escape_string($ss_id)."'";
 
+if (!empty($enroll_filter)) {
+    $sql .= " AND student_master.stu_enroll LIKE '%" . $conn->real_escape_string($enroll_filter) . "%'";
+}
+if (!empty($course_filter)) {
+    $sql .= " AND student_master.stu_program = '" . $conn->real_escape_string($course_filter) . "'";
+}
 if (!empty($gender_filter)) {
     $safe_gender = $conn->real_escape_string($gender_filter);
     $sql .= " AND student_master.stu_gender = '$safe_gender'";
 }
-
+if (!empty($campus_filter)) {
+    $sql .= " AND student_master.stu_campus = '" . $conn->real_escape_string($campus_filter) . "'";
+}
+if (!empty($college_filter)) {
+    $sql .= " AND student_master.stu_college = '" . $conn->real_escape_string($college_filter) . "'";
+}
+if (!empty($year_filter)) {
+    $sql .= " AND student_master.stu_year_level = '" . $conn->real_escape_string($year_filter) . "'";
+}
 if (!empty($search)) {
     $safe_search = $conn->real_escape_string($search);
     $sql .= " AND (student_master.stu_fname LIKE '%$safe_search%' 
@@ -108,9 +132,41 @@ $result = $conn->query($sql);
             
             <!------------- DISPLAY STUDENTS -------------------->
 <form method="GET" class="mb-3">
-    <div class="row">
+    <div class="row g-2 mb-2">
         <input type="hidden" name="ss_id" value="<?php echo htmlspecialchars($ss_id); ?>">
         <input type="hidden" name="ss_name" value="<?php echo htmlspecialchars($ss_name); ?>">
+        <div class="col-md-2">
+            <select name="campus_filter" class="form-select">
+                <option value="">All Campuses</option>
+                <?php while($row = $campuses->fetch_assoc()){ ?>
+                    <option value="<?php echo htmlspecialchars($row['stu_campus']); ?>" <?php if($campus_filter==$row['stu_campus']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_campus']); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="college_filter" class="form-select">
+                <option value="">All Colleges</option>
+                <?php while($row = $colleges->fetch_assoc()){ ?>
+                    <option value="<?php echo htmlspecialchars($row['stu_college']); ?>" <?php if($college_filter==$row['stu_college']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_college']); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="year_filter" class="form-select">
+                <option value="">All Years</option>
+                <?php while($row = $years->fetch_assoc()){ ?>
+                    <option value="<?php echo htmlspecialchars($row['stu_year_level']); ?>" <?php if($year_filter==$row['stu_year_level']) echo 'selected'; ?>><?php echo htmlspecialchars($row['stu_year_level']); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="course_filter" class="form-select">
+                <option value="">All Courses</option>
+                <?php while($row = $courses->fetch_assoc()){ ?>
+                    <option value="<?php echo htmlspecialchars($row['stu_program']); ?>" <?php if($course_filter==$row['stu_program']) echo 'selected'; ?>><?php echo htmlspecialchars(getShortCourseName($row['stu_program'])); ?></option>
+                <?php } ?>
+            </select>
+        </div>
         <div class="col-md-2">
             <select name="gender_filter" class="form-select">
                 <option value="">All Genders</option>
@@ -119,12 +175,14 @@ $result = $conn->query($sql);
                 <option value="O" <?php if($gender_filter == 'O') echo 'selected'; ?>>Other</option>
             </select>
         </div>
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Search others..." value="<?php echo htmlspecialchars($search); ?>">
+    </div>
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input type="text" name="enroll_filter" class="form-control" placeholder="Enrollment No" value="<?php echo htmlspecialchars($enroll_filter); ?>">
         </div>
-        <div class="col-md-6">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a href="export.php?type=list_names&ss_id=<?php echo urlencode($ss_id); ?>&search=<?php echo urlencode($search); ?>&gender=<?php echo urlencode($gender_filter); ?>" class="btn btn-success ms-2">Export to Excel</a>
+        <div class="col-md-3 d-flex gap-1">
+            <button type="submit" class="btn btn-primary w-50">Filter</button>
+            <a href="export.php?type=list_names&ss_id=<?php echo urlencode($ss_id); ?>&gender=<?php echo urlencode($gender_filter); ?>&enroll=<?php echo urlencode($enroll_filter); ?>&course=<?php echo urlencode($course_filter); ?>&campus=<?php echo urlencode($campus_filter); ?>&college=<?php echo urlencode($college_filter); ?>&year=<?php echo urlencode($year_filter); ?>" class="btn btn-success w-50" title="Export to Excel">Export</a>
         </div>
     </div>
 </form>
@@ -139,7 +197,7 @@ $result = $conn->query($sql);
             <th>Year</th>
             <th>Campus</th>
             <th>College</th>
-            <th>Branch</th>
+            <th>Course</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -150,7 +208,7 @@ $result = $conn->query($sql);
             while ($row = $result->fetch_assoc()) {
         ?>
         <tr>
-            <td><?php echo htmlspecialchars($row['stu_enroll']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_enroll'] ?? ''); ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
             <td><?php 
                 if ($row['stu_gender'] == 'M') echo 'Male';

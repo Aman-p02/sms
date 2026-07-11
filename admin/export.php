@@ -32,19 +32,40 @@ if ($type === 'students') {
 
     $ss_id = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
     $gender_filter = isset($_GET['gender']) ? $_GET['gender'] : '';
+    $enroll_filter = isset($_GET['enroll']) ? $_GET['enroll'] : '';
+    $course_filter = isset($_GET['course']) ? $_GET['course'] : '';
+    $campus_filter = isset($_GET['campus']) ? $_GET['campus'] : '';
+    $college_filter = isset($_GET['college']) ? $_GET['college'] : '';
+    $year_filter = isset($_GET['year']) ? $_GET['year'] : '';
+
     if (empty($ss_id)) {
         die("Invalid scholarship ID.");
     }
 
-    $sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
+    $sql = "SELECT scholarship.ss_id, student_master.stu_id, student_master.stu_enroll, student_master.stu_fname, student_master.stu_lname, student_master.stu_gender, ss_master.ss_year, student_master.stu_campus, student_master.stu_college, student_master.stu_program, scholarship.app_status 
             FROM scholarship
             INNER JOIN student_master ON scholarship.stu_id=student_master.stu_id 
             INNER JOIN ss_master ON scholarship.ss_id=ss_master.ss_id
             Where scholarship.ss_id = '".$conn->real_escape_string($ss_id)."'";
 
+    if (!empty($enroll_filter)) {
+        $sql .= " AND student_master.stu_enroll LIKE '%" . $conn->real_escape_string($enroll_filter) . "%'";
+    }
+    if (!empty($course_filter)) {
+        $sql .= " AND student_master.stu_program = '" . $conn->real_escape_string($course_filter) . "'";
+    }
     if (!empty($gender_filter)) {
         $safe_gender = $conn->real_escape_string($gender_filter);
         $sql .= " AND student_master.stu_gender = '$safe_gender'";
+    }
+    if (!empty($campus_filter)) {
+        $sql .= " AND student_master.stu_campus = '" . $conn->real_escape_string($campus_filter) . "'";
+    }
+    if (!empty($college_filter)) {
+        $sql .= " AND student_master.stu_college = '" . $conn->real_escape_string($college_filter) . "'";
+    }
+    if (!empty($year_filter)) {
+        $sql .= " AND student_master.stu_year_level = '" . $conn->real_escape_string($year_filter) . "'";
     }
 
     if (!empty($search)) {
@@ -62,12 +83,13 @@ if ($type === 'students') {
 } elseif ($type === 'year_wise_summary') {
 
     $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
+    $filter_campus = isset($_GET['campus']) ? $_GET['campus'] : '';
     $filter_college = isset($_GET['college']) ? $_GET['college'] : '';
     $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
     $filter_scholarship = isset($_GET['scholarship']) ? $_GET['scholarship'] : '';
     $filter_amount = isset($_GET['amount']) ? $_GET['amount'] : '';
 
-    $sql = "SELECT s.stu_fname, s.stu_lname, s.stu_college, s.stu_program, 
+    $sql = "SELECT s.stu_fname, s.stu_lname, s.stu_campus, s.stu_college, s.stu_program, 
                    sm.ss_name, sm.ss_year, sm.ss_amount, sc.app_status 
             FROM scholarship sc
             INNER JOIN student_master s ON sc.stu_id = s.stu_id
@@ -76,6 +98,9 @@ if ($type === 'students') {
 
     if (!empty($filter_year)) {
         $sql .= " AND sm.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
+    }
+    if (!empty($filter_campus)) {
+        $sql .= " AND s.stu_campus = '" . $conn->real_escape_string($filter_campus) . "'";
     }
     if (!empty($filter_college)) {
         $sql .= " AND s.stu_college = '" . $conn->real_escape_string($filter_college) . "'";
@@ -153,16 +178,18 @@ header("Expires: 0");
         <?php } ?>
     <?php } elseif ($type === 'list_names') { ?>
         <tr>
+            <th>Enrollment No</th>
             <th>Student Name</th>
             <th>Gender</th>
             <th>Year</th>
             <th>Campus</th>
             <th>College</th>
-            <th>Branch</th>
+            <th>Course</th>
             <th>Status</th>
         </tr>
         <?php while ($row = $result->fetch_assoc()) { ?>
         <tr>
+            <td><?php echo htmlspecialchars($row['stu_enroll'] ?? ''); ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
             <td><?php 
                 if ($row['stu_gender'] == 'M') echo 'Male';
@@ -180,6 +207,7 @@ header("Expires: 0");
     <?php } elseif ($type === 'year_wise_summary') { ?>
         <tr>
             <th>Student Name</th>
+            <th>Campus</th>
             <th>College</th>
             <th>Course</th>
             <th>Scholarship</th>
@@ -190,6 +218,7 @@ header("Expires: 0");
         <?php while ($row = $result->fetch_assoc()) { ?>
         <tr>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
