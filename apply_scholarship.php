@@ -117,47 +117,39 @@ if (isset($_SESSION['stu_id'])) {
                                             $end = $row['ss_end'];
                                             $today = date('Y-m-d');
 
-                                        if ($end <= $today || $stu_status == 'blocked') 
-                                        {
-                                        ?>
-                                            <a href="" class="btn btn-secondary btn-sm" disabled >Passed</a>
-                                        
-                                        <?php 
-                                        } 
-                                        else
-                                        { 
+                                            // Check if student applied
                                             $sql2 = "select app_status from scholarship where stu_id = '".$stu_id."' and ss_id = '".$row['ss_id']."'";
                                             $result2 = $conn->query($sql2);                   
                                             $row2 = $result2->fetch_assoc();
-                                            if($row2)
-                                            {
-                                                if($row2['app_status'] == 'Applied')
-                                                {
-                                                ?>
-                                                    <a href="" class="btn btn-info btn-sm" disabled > Applied</a>
-                                                <?php 
-                                                }
-                                                else if($row2['app_status'] == 'Approved')
-                                                {
-                                                ?>
-                                                    <a href="" class="btn btn-success btn-sm" disabled > Approved</a>
-                                                <?php
-                                                }
-                                                else
-                                                {
-                                                ?>
-                                                   <a href="" class="btn btn-danger btn-sm" disabled > Rejected</a>
-                                                <?php
-                                                }
 
+                                            if ($row2) {
+                                                // Student has applied, show their status regardless of deadline
+                                                if($row2['app_status'] == 'Applied') {
+                                                ?>
+                                                    <a href="#" class="btn btn-info btn-sm" disabled>Applied</a>
+                                                <?php
+                                                } else if($row2['app_status'] == 'Approved') {
+                                                ?>
+                                                    <a href="#" class="btn btn-success btn-sm" disabled>Approved</a>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <a href="#" class="btn btn-danger btn-sm" disabled>Rejected</a>
+                                                <?php
+                                                }
+                                            } else {
+                                                // Student has not applied
+                                                if ($end < $today || $stu_status == 'blocked') {
+                                                ?>
+                                                    <a href="#" class="btn btn-secondary btn-sm" disabled>Passed</a>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <a href="apply.php?ss_id=<?php echo $row['ss_id'];?>&stu_id=<?php echo $stu_id;?>" 
+                                                       class="btn btn-warning btn-sm">Apply</a>
+                                                <?php
+                                                }
                                             }
-                                            else
-                                            { ?>
-                                                <a href="apply.php?ss_id=<?php echo $row['ss_id'];?>&stu_id=<?php echo $stu_id;?>" 
-                                                   class="btn btn-warning btn-sm">Apply</a>
-                                            <?php
-                                            }
-                                        }
                                         ?>
                                     </td>
                                 </tr>
