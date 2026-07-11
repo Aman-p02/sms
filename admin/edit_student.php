@@ -15,13 +15,6 @@ if (!isset($_GET['stu_id'])) {
 $stu_id = $_GET['stu_id'];
 $stu_enroll = $_GET['stu_enroll'];
 
-/*To fill values in form*/
-$stmt = $conn->prepare("SELECT * FROM `student_master` WHERE `stu_id` = '". $stu_id ."' ");
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-
-    
 /*Update form values*/
 if (isset($_POST['update_profile'])) {
     $stu_fname          = trim($_POST['stu_fname']);
@@ -185,6 +178,12 @@ if (isset($_POST['update_profile'])) {
     
 }
     
+/*Fetch updated values for form*/
+$stmt = $conn->prepare("SELECT * FROM `student_master` WHERE `stu_id` = '". $stu_id ."' ");
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
 ?>
 
 <!------------------- BODY STARTS ---------------------->
@@ -212,7 +211,58 @@ if (isset($_POST['update_profile'])) {
             <h2 class="fw-bold mb-4">Manage Students</h2>
 
            
-           <div id="editProfile" class="mt-5">
+           <div id="editProfile" class="mt-4">
+                
+                <?php
+                // Calculate photo path
+                $photo_path = (!empty($user['stu_profilepic']) && file_exists("../uploads/profile_photos/" . $user['stu_profilepic'])) 
+                    ? "../uploads/profile_photos/" . $user['stu_profilepic'] 
+                    : null;
+                ?>
+
+                <div class="card p-4 shadow-sm mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center border-end">
+                            <h6 class="mb-3 fw-bold">Student Photo</h6>
+                            <?php if ($photo_path) { ?>
+                                <img src="<?php echo $photo_path; ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-thumbnail" style="width: 160px; height: 160px; object-fit: cover;">
+                            <?php } else { ?>
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white img-thumbnail" style="width: 160px; height: 160px; font-size: 48px;">
+                                    <?php echo strtoupper(substr($user['stu_fname'], 0, 1)); ?>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="col-md-9 ps-md-4">
+                            <h5 class="fw-bold mb-3">Student Details</h5>
+                            <div class="row mb-2">
+                                <div class="col-sm-3 text-muted">Enrollment No:</div>
+                                <div class="col-sm-9 fw-bold"><?php echo htmlspecialchars($user['stu_enroll']); ?></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-3 text-muted">Full Name:</div>
+                                <div class="col-sm-9 fw-bold">
+                                    <?php echo htmlspecialchars(trim($user['stu_fname'] . ' ' . $user['stu_mname'] . ' ' . $user['stu_lname'] . ' ' . $user['stu_ext'])); ?>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-3 text-muted">Email:</div>
+                                <div class="col-sm-9 fw-bold"><?php echo htmlspecialchars($user['stu_email']); ?></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-3 text-muted">Campus:</div>
+                                <div class="col-sm-9 fw-bold"><?php echo htmlspecialchars($user['stu_campus']); ?></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-3 text-muted">College:</div>
+                                <div class="col-sm-9 fw-bold"><?php echo htmlspecialchars($user['stu_college']); ?></div>
+                            </div>
+                            <div class="row mb-0">
+                                <div class="col-sm-3 text-muted">Course:</div>
+                                <div class="col-sm-9 fw-bold"><?php echo htmlspecialchars($user['stu_program']); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="card p-3 shadow card-custom">
                     <form method="post" enctype="multipart/form-data">
