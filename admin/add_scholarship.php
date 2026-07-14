@@ -17,10 +17,22 @@ if (isset($_POST['submit'])) {
     $ss_end            = $_POST['ss_end'];
     $ss_amount         = $_POST['ss_amount'];    
     
-    
+    // Handle Document Upload
+    $ss_document = "";
+    if (isset($_FILES['ss_document']) && $_FILES['ss_document']['error'] == 0) {
+        $upload_dir = "../uploads/scholarships/";
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        $filename = time() . "_" . basename($_FILES['ss_document']['name']);
+        $target_file = $upload_dir . $filename;
+        if (move_uploaded_file($_FILES['ss_document']['tmp_name'], $target_file)) {
+            $ss_document = $filename;
+        }
+    }
         
     // Insert data
-    $sql = "INSERT INTO `ss_master` (`ss_year`, `ss_name`, `ss_type`, `ss_desc`, `ss_start`, `ss_end`, `ss_amount`) VALUES ('".$ss_year."', '". $ss_name ."', '". $ss_type ."', '". $ss_desc ."', '". $ss_start ."', '". $ss_end ."', '". $ss_amount ."')";
+    $sql = "INSERT INTO `ss_master` (`ss_year`, `ss_name`, `ss_type`, `ss_desc`, `ss_start`, `ss_end`, `ss_amount`, `ss_document`) VALUES ('".$ss_year."', '". $ss_name ."', '". $ss_type ."', '". $ss_desc ."', '". $ss_start ."', '". $ss_end ."', '". $ss_amount ."', '".$ss_document."')";
     
     
     /*echo $sql;*/
@@ -65,7 +77,7 @@ if (isset($_POST['submit'])) {
             <h3 class="mb-4">Add New Scholarship</h3>
 
             <div class="card p-4 shadow card-custom">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="row g-3">
                        
                        <div class="col-md-6">
@@ -122,6 +134,10 @@ if (isset($_POST['submit'])) {
                             <input type="number" class="form-control" name="ss_amount">
                         </div>
                         
+                        <div class="col-md-12">
+                            <label class="form-label">Attach Document (Optional)</label>
+                            <input type="file" class="form-control" name="ss_document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        </div>
                         
                     </div>
                     <button class="btn btn-primary mt-3" name="submit">Add Scholarship</button>

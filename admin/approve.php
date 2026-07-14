@@ -130,6 +130,25 @@ $result = $conn->query($sql);
                 </form>
             </div>
 
+            <?php
+            $rows = [];
+            $approved_count = 0;
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $rows[] = $row;
+                    if ($row['app_status'] == 'Approved') {
+                        $approved_count++;
+                    }
+                }
+            }
+            $total_apps = count($rows);
+            ?>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 text-primary fw-bold">Total Applications: <?php echo $total_apps; ?></h5>
+                <h5 class="mb-0 text-success fw-bold">Approved: <?php echo $approved_count; ?></h5>
+            </div>
+
             <table class="table table-striped table-hover table-bordered align-middle">
                 <thead class="table-dark">
                     <tr>
@@ -144,8 +163,8 @@ $result = $conn->query($sql);
                 </thead>
 
                 <tbody>
-                    <?php if ($result && $result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php if ($total_apps > 0): ?>
+                        <?php foreach ($rows as $row): ?>
                             <?php 
                                 $student_name = trim($row['stu_fname'] . ' ' . $row['stu_lname']);
                             ?>
@@ -171,7 +190,7 @@ $result = $conn->query($sql);
                                     </div>
                                 </td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
                             <td colspan="7" class="text-center text-muted py-4">No applications found.</td>

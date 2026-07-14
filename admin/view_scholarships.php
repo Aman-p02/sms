@@ -135,7 +135,7 @@ $result = $conn->query($sql);
             <th><a href="?sort=ss_start&order=ASC">Start Date</a></th>
             <th><a href="?sort=ss_end&order=ASC">End Date</a></th>
             <th><a href="?sort=ss_amount&order=ASC">Amount</a></th>
-            
+            <th>Document</th>
             
             <th>Actions</th>
         </tr>
@@ -153,6 +153,13 @@ $result = $conn->query($sql);
             <td><?php echo $row['ss_start']; ?></td>
             <td><?php echo $row['ss_end']; ?></td>
             <td><?php echo $row['ss_amount']; ?></td>
+            <td>
+                <?php if (!empty($row['ss_document'])): ?>
+                    <a href="../uploads/scholarships/<?php echo urlencode($row['ss_document']); ?>" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                <?php else: ?>
+                    <span class="text-muted small">-</span>
+                <?php endif; ?>
+            </td>
             
             <td>
                 <!-- Edit -->

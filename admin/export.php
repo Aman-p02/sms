@@ -180,8 +180,11 @@ if ($type === 'students') {
     $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
     $filter_scholarship = isset($_GET['scholarship']) ? $_GET['scholarship'] : '';
     $filter_amount = isset($_GET['amount']) ? $_GET['amount'] : '';
+    $filter_gender = isset($_GET['gender']) ? $_GET['gender'] : '';
+    $filter_status = isset($_GET['status']) ? $_GET['status'] : '';
+    $search_query = isset($_GET['search']) ? $_GET['search'] : '';
 
-    $sql = "SELECT s.stu_fname, s.stu_lname, s.stu_campus, s.stu_college, s.stu_program, 
+    $sql = "SELECT s.stu_enroll, s.stu_gender, s.stu_fname, s.stu_lname, s.stu_campus, s.stu_college, s.stu_program, 
                    sm.ss_name, sm.ss_year, sm.ss_amount, sc.app_status 
             FROM scholarship sc
             INNER JOIN student_master s ON sc.stu_id = s.stu_id
@@ -206,10 +209,59 @@ if ($type === 'students') {
     if (!empty($filter_amount)) {
         $sql .= " AND sm.ss_amount = '" . $conn->real_escape_string($filter_amount) . "'";
     }
+    if (!empty($filter_gender)) {
+        $sql .= " AND s.stu_gender = '" . $conn->real_escape_string($filter_gender) . "'";
+    }
+    if (!empty($filter_status)) {
+        $sql .= " AND sc.app_status = '" . $conn->real_escape_string($filter_status) . "'";
+    }
+    if (!empty($search_query)) {
+        $safe_search = $conn->real_escape_string($search_query);
+        $sql .= " AND (s.stu_fname LIKE '%$safe_search%' OR s.stu_lname LIKE '%$safe_search%' OR s.stu_enroll LIKE '%$safe_search%' OR sm.ss_name LIKE '%$safe_search%')";
+    }
 
     $sql .= " ORDER BY sm.ss_year DESC, s.stu_fname ASC";
     $result = $conn->query($sql);
     $filename = "year_wise_summary_export.xls";
+
+} elseif ($type === 'approved_summary') {
+
+    $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
+    $filter_campus = isset($_GET['campus']) ? $_GET['campus'] : '';
+    $filter_college = isset($_GET['college']) ? $_GET['college'] : '';
+    $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
+    $filter_scholarship = isset($_GET['scholarship']) ? $_GET['scholarship'] : '';
+
+    $sql = "SELECT 
+                sm.ss_year AS Year,
+                COUNT(DISTINCT sm.ss_id) AS Total_Scholarships,
+                COUNT(DISTINCT s.stu_id) AS Total_Beneficiaries,
+                SUM(sm.ss_amount) AS Total_Approved_Amount
+            FROM scholarship s
+            JOIN ss_master sm ON s.ss_id = sm.ss_id
+            JOIN student_master stu ON s.stu_id = stu.stu_id
+            WHERE s.app_status = 'Approved'";
+
+    if (!empty($filter_year)) {
+        $sql .= " AND sm.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
+    }
+    if (!empty($filter_campus)) {
+        $sql .= " AND stu.stu_campus = '" . $conn->real_escape_string($filter_campus) . "'";
+    }
+    if (!empty($filter_college)) {
+        $sql .= " AND stu.stu_college = '" . $conn->real_escape_string($filter_college) . "'";
+    }
+    if (!empty($filter_course)) {
+        $sql .= " AND stu.stu_program = '" . $conn->real_escape_string($filter_course) . "'";
+    }
+    if (!empty($filter_scholarship)) {
+        $sql .= " AND sm.ss_name = '" . $conn->real_escape_string($filter_scholarship) . "'";
+    }
+
+    $sql .= " GROUP BY sm.ss_year ORDER BY sm.ss_year DESC";
+            
+    $result = $conn->query($sql);
+    $filename = "year_wise_approved_summary_export.xls";
 
 } elseif ($type === 'approvals') {
 
@@ -384,7 +436,9 @@ header("Expires: 0");
         <?php } ?>
     <?php } elseif ($type === 'year_wise_summary') { ?>
         <tr>
+            <th>Enrollment</th>
             <th>Student Name</th>
+            <th>Gender</th>
             <th>Campus</th>
             <th>College</th>
             <th>Course</th>
@@ -395,7 +449,9 @@ header("Expires: 0");
         </tr>
         <?php while ($row = $result->fetch_assoc()) { ?>
         <tr>
+            <td><?php echo htmlspecialchars($row['stu_enroll'] ?? '-'); ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_gender'] == 'M' ? 'Male' : ($row['stu_gender'] == 'F' ? 'Female' : $row['stu_gender'])); ?></td>
             <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
@@ -403,6 +459,21 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_amount']); ?></td>
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
+        </tr>
+        <?php } ?>
+    <?php } elseif ($type === 'approved_summary') { ?>
+        <tr>
+            <th>Year</th>
+            <th>No. of Scholarships</th>
+            <th>No. of Beneficiaries</th>
+            <th>Approved Amount for the Year</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['Year']); ?></td>
+            <td><?php echo htmlspecialchars($row['Total_Scholarships']); ?></td>
+            <td><?php echo htmlspecialchars($row['Total_Beneficiaries']); ?></td>
+            <td><?php echo htmlspecialchars($row['Total_Approved_Amount']); ?></td>
         </tr>
         <?php } ?>
     <?php } elseif ($type === 'approvals') { ?>

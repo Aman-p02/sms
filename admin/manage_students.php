@@ -184,7 +184,6 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
             <th><a href="?sort=stu_college&order=ASC">College</a></th>
             <th><a href="?sort=stu_program&order=ASC">Course</a></th>
             <th><a href="?sort=stu_year_level&order=ASC">Year</a></th>
-            <th><a href="?sort=stu_email&order=ASC">Email</a></th>
             <th><a href="?sort=stu_city&order=ASC">City</a></th>
             <th style="min-width: 150px;">Actions</th>
         </tr>
@@ -198,12 +197,15 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
         <tr>
             <td><?php echo $row['stu_id']; ?></td>
             <td><?php echo $row['stu_enroll']; ?></td>
-            <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
+            <td>
+                <a href="edit_student.php?stu_id=<?php echo $row['stu_id']; ?>&stu_enroll=<?php echo $row['stu_enroll']; ?>" class="text-primary fw-bold text-decoration-none">
+                    <?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?>
+                </a>
+            </td>
+            <td><?php echo htmlspecialchars(getShortCourseName($row['stu_campus'])); ?></td>
+            <td><?php echo htmlspecialchars(getShortCourseName($row['stu_college'])); ?></td>
             <td><?php echo htmlspecialchars(getShortCourseName($row['stu_program'])); ?></td>
             <td><?php echo htmlspecialchars($row['stu_year_level']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_email']); ?></td>
             <td><?php echo htmlspecialchars($row['stu_city']); ?></td>
             <td>
                 <div class="d-flex gap-1 flex-wrap">

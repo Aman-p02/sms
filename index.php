@@ -19,6 +19,31 @@ if ($notice_query) {
     }
 }
 
+// Total Scholarships
+$scholarship_res = $conn->query("SELECT COUNT(*) as cnt FROM ss_master");
+$total_scholarships = $scholarship_res->fetch_assoc()['cnt'] ?? 0;
+
+// Total Applications
+$application_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id");
+$total_applications = $application_res->fetch_assoc()['cnt'] ?? 0;
+
+// Total Applicants
+$applicant_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id");
+$total_applicants = $applicant_res->fetch_assoc()['cnt'] ?? 0;
+
+// Approved Scholarships
+$approved_ss_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id WHERE s.app_status = 'Approved'");
+$approved_scholarships = $approved_ss_res->fetch_assoc()['cnt'] ?? 0;
+
+// Approved Candidates
+$approved_cand_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id WHERE s.app_status = 'Approved'");
+$approved_candidates = $approved_cand_res->fetch_assoc()['cnt'] ?? 0;
+
+// Approved Amount
+$amount_res = $conn->query("SELECT SUM(sm.ss_amount) as total_amount FROM scholarship sc INNER JOIN ss_master sm ON sc.ss_id = sm.ss_id INNER JOIN student_master stu ON sc.stu_id = stu.stu_id WHERE sc.app_status = 'Approved'");
+$total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
+
+
 if (isset($_POST['submit'])) {
 
     $stu_enroll = trim($_POST['stu_enroll']);
@@ -150,7 +175,7 @@ if (isset($_POST['submit'])) {
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill"><i class="bi bi-calendar-event me-1"></i> Start: <?php echo date("d M Y", strtotime($notice['ss_start'])); ?></span>
                                     <span class="badge bg-warning text-dark border-0 px-3 py-2 rounded-pill"><i class="bi bi-calendar-x me-1"></i> End: <?php echo date("d M Y", strtotime($notice['ss_end'])); ?></span>
-                                    <a href="index.php?redirect=apply#about-login" class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-sm ms-2"><i class="bi bi-box-arrow-in-right me-1"></i> Apply Online</a>
+                                    <a href="index.php?redirect=apply#about-login" class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-sm ms-2"><i class="bi bi-box-arrow-in-right me-1"></i> Apply</a>
                                 </div>
                             </li>
                         <?php endforeach; ?>
@@ -203,12 +228,71 @@ if (isset($_POST['submit'])) {
         </div>
     </section>
 
-    <!-- Apply Section -->
-    <section id="apply" class="py-5 text-center">
+    <!-- Statistics Section -->
+    <section id="statistics" class="py-5 bg-white text-center border-top border-bottom">
         <div class="container">
-            <h2 class="fw-bold">Apply for Scholarship</h2>
-            <p class="mt-3">Start your scholarship journey by filling out the online application form.</p>
-            <a href="#about-login" class="btn btn-success btn-lg rounded-pill px-5 shadow-sm fw-bold">Start Application</a>
+            <h2 class="fw-bold text-dark display-6 mb-5">Program Impact</h2>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
+                            <i class="bi bi-award text-primary fs-3"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold mb-3">Total Scholarships</h5>
+                        <h2 class="fw-bold text-dark display-5"><?php echo number_format($total_scholarships); ?></h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
+                            <i class="bi bi-file-earmark-text text-primary fs-3"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold mb-3">Total Applications</h5>
+                        <h2 class="fw-bold text-dark display-5"><?php echo number_format($total_applications); ?></h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
+                            <i class="bi bi-people text-primary fs-3"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold mb-3">Total Applicants</h5>
+                        <h2 class="fw-bold text-dark display-5"><?php echo number_format($total_applicants); ?></h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
+                            <i class="bi bi-check-circle text-success fs-3"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold mb-3">Approved Scholarships</h5>
+                        <h2 class="fw-bold text-success display-5"><?php echo number_format($approved_scholarships); ?></h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
+                            <i class="bi bi-person-check text-success fs-3"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold mb-3">Approved Candidates</h5>
+                        <h2 class="fw-bold text-success display-5"><?php echo number_format($approved_candidates); ?></h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
+                            <i class="bi bi-cash-stack text-success fs-3"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold mb-3">Total Funds Disbursed</h5>
+                        <h2 class="fw-bold text-success display-5"><?php echo number_format($total_approved_amount); ?></h2>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </section>
     
