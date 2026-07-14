@@ -412,15 +412,14 @@ $complete = $row5['complete'];
                 <div class="card p-4 shadow card-custom mb-4">
                     <div class="row align-items-center">
                         <div class="col-md-3 text-center border-end">
-                            <h6 class="mb-3 text-muted fw-bold">Student Photo</h6>
                             <?php 
                             $__photo_path = (!empty($user['stu_profilepic']) && file_exists("uploads/profile_photos/" . $user['stu_profilepic'])) 
                                 ? "uploads/profile_photos/" . $user['stu_profilepic'] 
                                 : null;
                             if ($__photo_path) { ?>
-                                <img src="<?php echo htmlspecialchars($__photo_path); ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-fluid border rounded shadow-sm" style="width: 150px; height: 200px; object-fit: contain; background-color: #f8f9fa;">
+                                <img src="<?php echo htmlspecialchars($__photo_path); ?>?v=<?php echo time(); ?>" alt="Student Photo" class="img-fluid border rounded shadow-sm" style="width: 180px; height: 240px; object-fit: contain; background-color: #f8f9fa;">
                             <?php } else { ?>
-                                <div class="border rounded d-flex align-items-center justify-content-center mx-auto bg-light text-muted shadow-sm" style="width: 150px; height: 200px; font-size: 14px;">
+                                <div class="border rounded d-flex align-items-center justify-content-center mx-auto bg-light text-muted shadow-sm" style="width: 180px; height: 240px; font-size: 14px;">
                                     No Photo
                                 </div>
                             <?php } ?>
