@@ -56,7 +56,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="col-md-3 col-lg-2 sidebar p-0">
             <h4 class="text-center py-3 border-bottom mb-0">Student Panel</h4>
 
-            <a href="stu_dashboard.php" class="<?php if($current_page == 'stu_dashboard.php') echo 'active'; ?>">Dashboard</a>
             <a href="stu_profile.php" class="<?php if($current_page == 'stu_profile.php') echo 'active'; ?>">Edit Profile</a>
             <?php 
             if($complete == "Yes")

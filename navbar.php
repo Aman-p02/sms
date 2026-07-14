@@ -18,9 +18,7 @@
                     <li class="nav-item">
                         <a class="nav-link fw-semibold fs-5" href="/SMS/admin/adm_login.php"><i class="bi bi-shield-lock me-1"></i> Admin</a>
                     </li>                    
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold fs-5" href="/SMS/index.php#apply"><i class="bi bi-pencil-square me-1"></i> Apply</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link fw-semibold fs-5" href="/SMS/index.php#contact"><i class="bi bi-envelope me-1"></i> Contact</a>
                     </li>

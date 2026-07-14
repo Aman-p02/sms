@@ -64,7 +64,7 @@ if (isset($_FILES['stu_photo']) && $_FILES['stu_photo']['error'] === UPLOAD_ERR_
     // Fallback to stu_id if enrollment number is missing
     $enroll_identifier = (!empty($stu_enroll)) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', $stu_enroll) : $stu_id;
     
-    $new_filename = "student_" . $enroll_identifier . "." . $ext;
+    $new_filename = $enroll_identifier . "." . $ext;
     $upload_dir = "uploads/profile_photos/";
 
     if (!is_dir($upload_dir)) {

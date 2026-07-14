@@ -25,6 +25,7 @@ $total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -75,6 +76,43 @@ $total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
                                 <h3><?php echo number_format($total_approved_amount); ?></h3>
                             </div>
                         </a>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card shadow card-custom">
+                            <div class="card-header bg-white border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
+                                <h5 class="fw-bold mb-0">Recent Notifications</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <?php
+                                $notif_res = $conn->query("SELECT * FROM admin_notifications ORDER BY created_at DESC LIMIT 10");
+                                if ($notif_res && $notif_res->num_rows > 0):
+                                ?>
+                                <ul class="list-group list-group-flush">
+                                    <?php while($notif = $notif_res->fetch_assoc()): ?>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center p-3 <?php echo $notif['is_read'] ? 'bg-light' : ''; ?>">
+                                        <div>
+                                            <i class="bi bi-bell text-primary me-2"></i>
+                                            <span><?php echo htmlspecialchars($notif['message']); ?></span>
+                                            <div class="text-muted small mt-1"><i class="bi bi-clock me-1"></i><?php echo date('d M Y, h:i A', strtotime($notif['created_at'])); ?></div>
+                                        </div>
+                                        <?php if($notif['link']): ?>
+                                            <a href="<?php echo htmlspecialchars($notif['link']); ?>" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Document</a>
+                                        <?php endif; ?>
+                                    </li>
+                                    <?php endwhile; ?>
+                                </ul>
+                                <?php else: ?>
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-bell-slash fs-3 mb-2 d-block"></i>
+                                    <p class="mb-0">No new notifications.</p>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

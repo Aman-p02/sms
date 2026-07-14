@@ -12,13 +12,43 @@ $stu_id = $_SESSION['stu_id'];
 $stu_enroll = $_SESSION['stu_enroll'];
 $stu_fname = $_SESSION['stu_fname'];
 
+// Ensure notifications table exists
+$conn->query("CREATE TABLE IF NOT EXISTS `admin_notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
 $message = "";
+
+// Fetch approved scholarships for this student
+$approved_scholarships = [];
+$stmt_app = $conn->prepare("SELECT sm.ss_id, sm.ss_name FROM scholarship s JOIN ss_master sm ON s.ss_id = sm.ss_id WHERE s.stu_id = ? AND s.app_status = 'Approved'");
+$stmt_app->bind_param("i", $stu_id);
+$stmt_app->execute();
+$res_app = $stmt_app->get_result();
+while ($row = $res_app->fetch_assoc()) {
+    $approved_scholarships[] = $row;
+}
+$stmt_app->close();
 
 // Handle File Upload
 if (isset($_POST['upload_doc'])) {
     if (isset($_FILES['post_doc']) && $_FILES['post_doc']['error'] == 0) {
         $doc_name = $_POST['doc_name'] ?? 'Document';
         $doc_name_safe = preg_replace('/[^a-zA-Z0-9_-]/', '_', $doc_name); // Sanitize document name
+        $selected_ss = $_POST['scholarship_id'] ?? '';
+        
+        $ss_name = "Unknown Scholarship";
+        foreach ($approved_scholarships as $ss) {
+            if ($ss['ss_id'] == $selected_ss) {
+                $ss_name = $ss['ss_name'];
+                break;
+            }
+        }
 
         $allowedTypes = ['pdf', 'jpg', 'jpeg', 'png'];
         $fileName = basename($_FILES['post_doc']['name']);
@@ -32,6 +62,14 @@ if (isset($_POST['upload_doc'])) {
                 $target_path = $upload_dir . $newFileName;
 
                 if (move_uploaded_file($_FILES['post_doc']['tmp_name'], $target_path)) {
+                    // Add Admin Notification
+                    $notif_msg = "Student " . $stu_fname . " (Enrollment: " . $stu_enroll . ") uploaded a new document '" . $doc_name . "' for scholarship '" . $ss_name . "'.";
+                    $notif_link = "../uploads/post_scholarship/" . $newFileName;
+                    $stmt_notif = $conn->prepare("INSERT INTO admin_notifications (message, link) VALUES (?, ?)");
+                    $stmt_notif->bind_param("ss", $notif_msg, $notif_link);
+                    $stmt_notif->execute();
+                    $stmt_notif->close();
+
                     $message = "<div class='alert alert-success alert-dismissible fade show shadow-sm' role='alert'>
                                     <i class='bi bi-check-circle-fill me-2'></i> Document uploaded successfully!
                                     <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
@@ -117,6 +155,15 @@ $uploaded_files = glob($upload_dir . $stu_enroll . "_*.*");
                         <div class="card-body">
                             <form method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
+                                    <label class="form-label fw-semibold">Select Scholarship</label>
+                                    <select class="form-select" name="scholarship_id" required>
+                                        <option value="" disabled selected>-- Select Approved Scholarship --</option>
+                                        <?php foreach ($approved_scholarships as $ss): ?>
+                                            <option value="<?php echo $ss['ss_id']; ?>"><?php echo htmlspecialchars($ss['ss_name']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label fw-semibold">Document Name / Type</label>
                                     <input type="text" class="form-control" name="doc_name" required>
                                 </div>
@@ -130,7 +177,7 @@ $uploaded_files = glob($upload_dir . $stu_enroll . "_*.*");
                                     <input type="file" id="post_doc" name="post_doc" class="d-none" required onchange="document.getElementById('file-name-display').innerText = this.files[0].name;">
                                     <div id="file-name-display" class="mt-2 text-primary fw-bold text-center"></div>
                                 </div>
-                                <button type="submit" name="upload_doc" class="btn btn-primary w-100 fw-bold py-2"><i class="bi bi-upload me-2"></i> Upload Document</button>
+                                <button type="submit" name="upload_doc" class="btn btn-primary w-100 fw-bold py-2" <?php if(empty($approved_scholarships)) echo 'disabled'; ?>><i class="bi bi-upload me-2"></i> Upload Document</button>
                             </form>
                         </div>
                     </div>

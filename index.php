@@ -147,11 +147,11 @@ if (isset($_POST['submit'])) {
                         <?php foreach($notices as $notice): ?>
                             <li class="mb-4 pb-4 border-bottom position-relative">
                                 <h5 class="fw-bold text-primary mb-3"><i class="bi bi-award-fill text-warning me-2"></i> <?php echo htmlspecialchars($notice['ss_name']); ?></h5>
-                                <div class="d-flex gap-2 flex-wrap mb-3">
+                                <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill"><i class="bi bi-calendar-event me-1"></i> Start: <?php echo date("d M Y", strtotime($notice['ss_start'])); ?></span>
                                     <span class="badge bg-warning text-dark border-0 px-3 py-2 rounded-pill"><i class="bi bi-calendar-x me-1"></i> End: <?php echo date("d M Y", strtotime($notice['ss_end'])); ?></span>
+                                    <a href="index.php?redirect=apply#about-login" class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-sm ms-2"><i class="bi bi-box-arrow-in-right me-1"></i> Apply Online</a>
                                 </div>
-                                <a href="index.php?redirect=apply#about-login" class="d-inline-block text-success fw-bold text-decoration-none hover-primary mt-1"><i class="bi bi-arrow-right-circle-fill me-1"></i> Login to Student Portal to apply online!</a>
                             </li>
                         <?php endforeach; ?>
                         </ul>
