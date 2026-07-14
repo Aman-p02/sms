@@ -118,7 +118,7 @@ $uploaded_files = glob($upload_dir . $stu_enroll . "_*.*");
                             <form method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Document Name / Type</label>
-                                    <input type="text" class="form-control" name="doc_name" placeholder="e.g. Sem 2 Marksheet, Fee Receipt" required>
+                                    <input type="text" class="form-control" name="doc_name" required>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Select File</label>

@@ -7,15 +7,15 @@ $scholarship_res = $conn->query("SELECT COUNT(*) as cnt FROM ss_master");
 $total_scholarships = $scholarship_res->fetch_assoc()['cnt'] ?? 0;
 
 // Total Applicants
-$applicant_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship");
+$applicant_res = $conn->query("SELECT COUNT(DISTINCT s.stu_id) as cnt FROM scholarship s INNER JOIN student_master sm ON s.stu_id = sm.stu_id");
 $total_applicants = $applicant_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Candidates
-$approved_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship WHERE app_status = 'Approved'");
+$approved_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s INNER JOIN student_master sm ON s.stu_id = sm.stu_id WHERE s.app_status = 'Approved'");
 $approved_candidates = $approved_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Amount
-$amount_res = $conn->query("SELECT SUM(sm.ss_amount) as total_amount FROM scholarship sc INNER JOIN ss_master sm ON sc.ss_id = sm.ss_id WHERE sc.app_status = 'Approved'");
+$amount_res = $conn->query("SELECT SUM(sm.ss_amount) as total_amount FROM scholarship sc INNER JOIN ss_master sm ON sc.ss_id = sm.ss_id INNER JOIN student_master stu ON sc.stu_id = stu.stu_id WHERE sc.app_status = 'Approved'");
 $total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
 ?>
 <!DOCTYPE html>

@@ -348,6 +348,18 @@ ALTER TABLE `ss_master`
 --
 ALTER TABLE `student_master`
   MODIFY `stu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `scholarship`
+--
+ALTER TABLE `scholarship`
+  ADD CONSTRAINT `fk_scholarship` FOREIGN KEY (`ss_id`) REFERENCES `ss_master` (`ss_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_student` FOREIGN KEY (`stu_id`) REFERENCES `student_master` (`stu_id`) ON DELETE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

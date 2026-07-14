@@ -216,12 +216,12 @@ if ($type === 'students') {
     $filter_type = isset($_GET['type_filter']) ? $_GET['type_filter'] : '';
     $filter_name = isset($_GET['name']) ? $_GET['name'] : '';
     $filter_status = isset($_GET['status']) ? $_GET['status'] : '';
+    $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
 
     $sql = "SELECT 
                 s.app_id, s.app_status,
                 stu.stu_fname, stu.stu_lname,
-                ss.ss_name, ss.ss_type, ss.ss_amount,
-                (SELECT COUNT(*) FROM scholarship WHERE ss_id = ss.ss_id AND app_status = 'Approved') AS total_beneficiary
+                ss.ss_name, ss.ss_type, ss.ss_amount, ss.ss_year
             FROM scholarship s
             JOIN student_master stu ON s.stu_id = stu.stu_id
             JOIN ss_master ss ON s.ss_id = ss.ss_id
@@ -235,6 +235,9 @@ if ($type === 'students') {
     }
     if (!empty($filter_status)) {
         $sql .= " AND s.app_status = '" . $conn->real_escape_string($filter_status) . "'";
+    }
+    if (!empty($filter_year)) {
+        $sql .= " AND ss.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
     }
 
     $sql .= " ORDER BY s.app_id DESC";
@@ -408,13 +411,10 @@ header("Expires: 0");
             <th>Type of Scholarship</th>
             <th>Amount of Scholarship</th>
             <th>Name of Scholarship</th>
-            <th>Total Amount</th>
-            <th>Total Beneficiary</th>
+            <th>Year</th>
             <th>Status</th>
         </tr>
         <?php while ($row = $result->fetch_assoc()) { 
-            $total_beneficiary = $row['total_beneficiary'];
-            $total_amount = $total_beneficiary * $row['ss_amount'];
             $student_name = trim($row['stu_fname'] . ' ' . $row['stu_lname']);
         ?>
         <tr>
@@ -422,8 +422,7 @@ header("Expires: 0");
             <td><?php echo htmlspecialchars($row['ss_type']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_amount']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
-            <td><?php echo htmlspecialchars($total_amount); ?></td>
-            <td><?php echo htmlspecialchars($total_beneficiary); ?></td>
+            <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
         </tr>
         <?php } ?>

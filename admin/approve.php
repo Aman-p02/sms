@@ -23,12 +23,13 @@ if (isset($_GET['action']) && isset($_GET['app_id'])) {
 $filter_type = isset($_GET['type']) ? $_GET['type'] : '';
 $filter_name = isset($_GET['name']) ? $_GET['name'] : '';
 $filter_status = isset($_GET['status']) ? $_GET['status'] : '';
+$filter_year = isset($_GET['year']) ? $_GET['year'] : '';
 
 $sql = "SELECT 
             s.app_id, s.app_status,
             stu.stu_fname, stu.stu_lname,
-            ss.ss_name, ss.ss_type, ss.ss_amount, ss.ss_id,
-            (SELECT COUNT(*) FROM scholarship WHERE ss_id = ss.ss_id AND app_status = 'Approved') AS total_beneficiary
+            ss.ss_name, ss.ss_type, ss.ss_amount, ss.ss_id, ss.ss_year,
+            (SELECT COUNT(DISTINCT s2.stu_id) FROM scholarship s2 INNER JOIN student_master sm2 ON s2.stu_id = sm2.stu_id WHERE s2.ss_id = ss.ss_id AND s2.app_status = 'Approved') AS total_beneficiary
         FROM scholarship s
         JOIN student_master stu ON s.stu_id = stu.stu_id
         JOIN ss_master ss ON s.ss_id = ss.ss_id
@@ -42,6 +43,9 @@ if (!empty($filter_name)) {
 }
 if (!empty($filter_status)) {
     $sql .= " AND s.app_status = '" . $conn->real_escape_string($filter_status) . "'";
+}
+if (!empty($filter_year)) {
+    $sql .= " AND ss.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
 }
 
 $sql .= " ORDER BY s.app_id DESC";
@@ -70,7 +74,7 @@ $result = $conn->query($sql);
 
             <div class="card p-3 mb-4 shadow-sm">
                 <form method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Scholarship Type</label>
                         <select name="type" class="form-select">
                             <option value="">All Types</option>
@@ -83,7 +87,7 @@ $result = $conn->query($sql);
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Scholarship Name</label>
                         <select name="name" class="form-select">
                             <option value="">All Names</option>
@@ -96,7 +100,20 @@ $result = $conn->query($sql);
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Year</label>
+                        <select name="year" class="form-select">
+                            <option value="">All Years</option>
+                            <?php 
+                                $years = $conn->query("SELECT DISTINCT ss_year FROM ss_master WHERE ss_year IS NOT NULL AND ss_year != '' ORDER BY ss_year DESC");
+                                while ($row = $years->fetch_assoc()) {
+                                    $sel = ($filter_year == $row['ss_year']) ? 'selected' : '';
+                                    echo "<option value='".htmlspecialchars($row['ss_year'])."' $sel>".htmlspecialchars($row['ss_year'])."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Application Status</label>
                         <select name="status" class="form-select">
                             <option value="">All Statuses</option>
@@ -108,7 +125,7 @@ $result = $conn->query($sql);
                     <div class="col-md-12 d-flex gap-2 justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary px-4">Filter</button>
                         <a href="approve.php" class="btn btn-secondary px-4">Reset</a>
-                        <a href="export.php?type=approvals&type_filter=<?php echo urlencode($filter_type); ?>&name=<?php echo urlencode($filter_name); ?>&status=<?php echo urlencode($filter_status); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
+                        <a href="export.php?type=approvals&type_filter=<?php echo urlencode($filter_type); ?>&name=<?php echo urlencode($filter_name); ?>&status=<?php echo urlencode($filter_status); ?>&year=<?php echo urlencode($filter_year); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
                     </div>
                 </form>
             </div>
@@ -120,8 +137,7 @@ $result = $conn->query($sql);
                         <th>Type of Scholarship</th>
                         <th>Amount of Scholarship</th>
                         <th>Name of Scholarship</th>
-                        <th>Total Amount</th>
-                        <th>Total Beneficiary</th>
+                        <th>Year</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -131,8 +147,6 @@ $result = $conn->query($sql);
                     <?php if ($result && $result->num_rows > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                             <?php 
-                                $total_beneficiary = $row['total_beneficiary'];
-                                $total_amount = $total_beneficiary * $row['ss_amount'];
                                 $student_name = trim($row['stu_fname'] . ' ' . $row['stu_lname']);
                             ?>
                             <tr>
@@ -140,8 +154,7 @@ $result = $conn->query($sql);
                                 <td><?php echo htmlspecialchars($row['ss_type']); ?></td>
                                 <td><?php echo number_format($row['ss_amount'], 2); ?></td>
                                 <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
-                                <td><?php echo number_format($total_amount, 2); ?></td>
-                                <td><?php echo $total_beneficiary; ?></td>
+                                <td><?php echo htmlspecialchars($row['ss_year']); ?></td>
                                 <td>
                                     <?php if ($row['app_status'] == 'Applied'): ?>
                                         <span class="badge bg-warning text-dark">Pending</span>
@@ -161,7 +174,7 @@ $result = $conn->query($sql);
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">No applications found.</td>
+                            <td colspan="7" class="text-center text-muted py-4">No applications found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
