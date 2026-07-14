@@ -9,8 +9,8 @@ if (isset($_GET['search'])) {
 }
 
 // Sorting
-$order_by = "ss_id";
-$order = "ASC";
+$order_by = "ss_end";
+$order = "DESC";
 
 if (isset($_GET['sort'])) {
     $order_by = $_GET['sort'];
@@ -129,7 +129,7 @@ $result = $conn->query($sql);
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
-            <th><a href="?sort=ss_yearorder=ASC">Year</a></th>
+            <th><a href="?sort=ss_year&order=ASC">Year</a></th>
             <th><a href="?sort=ss_name&order=ASC">Name</a></th>
             <th><a href="?sort=ss_type&order=ASC">Type</a></th>
             <th><a href="?sort=ss_start&order=ASC">Start Date</a></th>
