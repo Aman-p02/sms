@@ -130,13 +130,13 @@ $result = $conn->query($sql);
     <thead class="table-dark">
         <tr>
             <?php $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; ?>
-            <th><a href="?sort=ss_year&order=<?php echo ($order_by == 'ss_year') ? $next_order : 'ASC'; ?>">Year</a></th>
-            <th><a href="?sort=ss_name&order=<?php echo ($order_by == 'ss_name') ? $next_order : 'ASC'; ?>">Name</a></th>
-            <th><a href="?sort=ss_type&order=<?php echo ($order_by == 'ss_type') ? $next_order : 'ASC'; ?>">Type</a></th>
-            <th><a href="?sort=ss_start&order=<?php echo ($order_by == 'ss_start') ? $next_order : 'ASC'; ?>">Start Date</a></th>
-            <th><a href="?sort=ss_end&order=<?php echo ($order_by == 'ss_end') ? $next_order : 'DESC'; ?>">End Date</a></th>
-            <th><a href="?sort=ss_amount&order=<?php echo ($order_by == 'ss_amount') ? $next_order : 'ASC'; ?>">Amount</a></th>
-            
+            <th><a href="?sort=ss_year&order=<?php echo ($order_by == 'ss_year') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Year</a></th>
+            <th><a href="?sort=ss_name&order=<?php echo ($order_by == 'ss_name') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Name</a></th>
+            <th><a href="?sort=ss_type&order=<?php echo ($order_by == 'ss_type') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Type</a></th>
+            <th><a href="?sort=ss_start&order=<?php echo ($order_by == 'ss_start') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Start Date</a></th>
+            <th><a href="?sort=ss_end&order=<?php echo ($order_by == 'ss_end') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">End Date</a></th>
+            <th><a href="?sort=ss_amount&order=<?php echo ($order_by == 'ss_amount') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Amount</a></th>
+            <th>Document</th>
             
             <th>Actions</th>
         </tr>
@@ -154,6 +154,13 @@ $result = $conn->query($sql);
             <td><?php echo $row['ss_start']; ?></td>
             <td><?php echo $row['ss_end']; ?></td>
             <td><?php echo $row['ss_amount']; ?></td>
+            <td>
+                <?php if (!empty($row['ss_document'])): ?>
+                    <a href="../uploads/scholarships/<?php echo urlencode($row['ss_document']); ?>" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                <?php else: ?>
+                    <span class="text-muted small">-</span>
+                <?php endif; ?>
+            </td>
             
             <td>
                 <!-- Edit -->

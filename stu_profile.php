@@ -9,18 +9,30 @@
 
 
 <?php
-    
-require_once 'session.php';
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.gc_maxlifetime', 2592000);
+    session_set_cookie_params(2592000);
+    session_start();
+}
 include "db.php";
 
-// Protect page
-if (!isset($_SESSION['stu_id'])) {
+$is_admin = false;
+$stu_id = null;
+$stu_enroll = null;
+$stu_fname = null;
+
+if (isset($_SESSION['adm_id']) && isset($_GET['stu_id'])) {
+    $is_admin = true;
+    $stu_id = $_GET['stu_id'];
+    $stu_enroll = isset($_GET['stu_enroll']) ? $_GET['stu_enroll'] : '';
+} elseif (isset($_SESSION['stu_id'])) {
+    $stu_id = $_SESSION['stu_id'];
+    $stu_enroll = $_SESSION['stu_enroll'];
+    $stu_fname = $_SESSION['stu_fname'];
+} else {
     header("Location: index.php");
     exit();
 }
-$stu_id = $_SESSION['stu_id'];
-$stu_enroll = $_SESSION['stu_enroll'];
-$stu_fname = $_SESSION['stu_fname'];
 
 /*To fill values in form (moved below update)*/
     
@@ -287,6 +299,7 @@ $stmt = $conn->prepare("SELECT * FROM `student_master` WHERE `stu_id` = '". $stu
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
+$stu_fname = $user['stu_fname']; // Fallback if admin
 
 $result5 = mysqli_query($conn, "SELECT * FROM student_master WHERE stu_id = '".$stu_id."'");
 $row5 = mysqli_fetch_assoc($result5);
@@ -300,7 +313,14 @@ $complete = $row5['complete'];
 <div class="container-fluid">
     <div class="row">
 
-        <?php include 'stu_sidebar.php'; ?>
+        <?php 
+        if ($is_admin) {
+            echo '<link href="admin/css/style.css" rel="stylesheet">';
+            include 'admin/sidebar.php'; 
+        } else {
+            include 'stu_sidebar.php'; 
+        }
+        ?>
 
         <!-- MAIN CONTENT -->
         <div class="col-md-9 col-lg-10 p-4">
@@ -562,7 +582,12 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Campus</label>
                                 <div class="col-sm-8">
-                                    <select class="form-select mb-3" name="stu_campus">
+                                    <?php if ($is_admin && $user['stu_campus'] != ''): ?>
+                                        <input type="hidden" name="stu_campus" value="<?php echo htmlspecialchars($user['stu_campus']); ?>">
+                                        <select class="form-select mb-3" disabled>
+                                    <?php else: ?>
+                                        <select class="form-select mb-3" name="stu_campus">
+                                    <?php endif; ?>
                                      <?php
                                         if ($user['stu_campus'] == '')
                                         {
@@ -590,7 +615,12 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">College</label>
                                 <div class="col-sm-8">
-                                    <select class="form-select mb-3" name="stu_college">
+                                    <?php if ($is_admin && $user['stu_college'] != ''): ?>
+                                        <input type="hidden" name="stu_college" value="<?php echo htmlspecialchars($user['stu_college']); ?>">
+                                        <select class="form-select mb-3" disabled>
+                                    <?php else: ?>
+                                        <select class="form-select mb-3" name="stu_college">
+                                    <?php endif; ?>
                                      <?php
                                         if ($user['stu_college'] == '')
                                         {
@@ -617,14 +647,19 @@ $complete = $row5['complete'];
                            
                            <div class="col-md-6">
                                <div class="row mb-3">
-                                <label class="col-sm-4 col-form-label">College</label>
+                                <label class="col-sm-4 col-form-label">Course</label>
                                 <div class="col-sm-8">
-                                    <select class="form-select mb-3" name="stu_program">
+                                    <?php if ($is_admin && $user['stu_program'] != ''): ?>
+                                        <input type="hidden" name="stu_program" value="<?php echo htmlspecialchars($user['stu_program']); ?>">
+                                        <select class="form-select mb-3" disabled>
+                                    <?php else: ?>
+                                        <select class="form-select mb-3" name="stu_program">
+                                    <?php endif; ?>
                                      <?php
                                         if ($user['stu_program'] == '')
                                         {
                                         ?>
-                                          <option value="">--- Select College ---</option>
+                                          <option value="">--- Select Course ---</option>
                                       <?php 
                                         }
                                         

@@ -75,6 +75,7 @@ if (isset($_SESSION['stu_id'])) {
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Amount</th>
+                            <th>Document</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -111,6 +112,13 @@ if (isset($_SESSION['stu_id'])) {
                                     <td><?php echo $row['ss_start']; ?></td>
                                     <td><?php echo $row['ss_end']; ?></td>
                                     <td><?php echo $row['ss_amount']; ?></td>
+                                    <td>
+                                        <?php if (!empty($row['ss_document'])): ?>
+                                            <a href="uploads/scholarships/<?php echo urlencode($row['ss_document']); ?>" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                                        <?php else: ?>
+                                            <span class="text-muted small">-</span>
+                                        <?php endif; ?>
+                                    </td>
 
                                     <td>
                                         <?php 
