@@ -48,7 +48,13 @@ if (!empty($filter_year)) {
     $sql .= " AND ss.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
 }
 
-$sql .= " ORDER BY s.app_id DESC";
+$order_by = isset($_GET['sort']) ? $_GET['sort'] : 's.app_id';
+$order = isset($_GET['order']) && $_GET['order'] == 'ASC' ? 'ASC' : 'DESC';
+
+$valid_columns = ['stu.stu_fname', 'ss.ss_type', 'ss.ss_amount', 'ss.ss_name', 'ss.ss_year', 's.app_status', 's.app_id'];
+if (!in_array($order_by, $valid_columns)) $order_by = 's.app_id';
+
+$sql .= " ORDER BY $order_by $order";
 $result = $conn->query($sql);
 
 ?>
@@ -125,7 +131,7 @@ $result = $conn->query($sql);
                     <div class="col-md-12 d-flex gap-2 justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary px-4">Filter</button>
                         <a href="approve.php" class="btn btn-secondary px-4">Reset</a>
-                        <a href="export.php?type=approvals&type_filter=<?php echo urlencode($filter_type); ?>&name=<?php echo urlencode($filter_name); ?>&status=<?php echo urlencode($filter_status); ?>&year=<?php echo urlencode($filter_year); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
+                        <a href="export.php?type=approvals&type_filter=<?php echo urlencode($filter_type); ?>&name=<?php echo urlencode($filter_name); ?>&status=<?php echo urlencode($filter_status); ?>&year=<?php echo urlencode($filter_year); ?>&sort=<?php echo urlencode($order_by); ?>&order=<?php echo urlencode($order); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
                     </div>
                 </form>
             </div>
@@ -133,12 +139,16 @@ $result = $conn->query($sql);
             <table class="table table-striped table-hover table-bordered align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th>Student</th>
-                        <th>Type of Scholarship</th>
-                        <th>Amount of Scholarship</th>
-                        <th>Name of Scholarship</th>
-                        <th>Year</th>
-                        <th>Status</th>
+                        <?php 
+                        $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; 
+                        $base_url = "?type=" . urlencode($filter_type) . "&name=" . urlencode($filter_name) . "&status=" . urlencode($filter_status) . "&year=" . urlencode($filter_year);
+                        ?>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_fname&order=<?php echo ($order_by == 'stu.stu_fname') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Student</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_type&order=<?php echo ($order_by == 'ss.ss_type') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Type of Scholarship</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_amount&order=<?php echo ($order_by == 'ss.ss_amount') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Amount of Scholarship</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_name&order=<?php echo ($order_by == 'ss.ss_name') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Name of Scholarship</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_year&order=<?php echo ($order_by == 'ss.ss_year') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Year</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=s.app_status&order=<?php echo ($order_by == 's.app_status') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Status</a></th>
                         <th>Action</th>
                     </tr>
                 </thead>

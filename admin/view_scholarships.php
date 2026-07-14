@@ -120,7 +120,7 @@ $result = $conn->query($sql);
                     <div class="col-md-12 d-flex gap-2 justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary px-4">Filter</button>
                         <a href="view_scholarships.php" class="btn btn-secondary px-4">Reset</a>
-                        <a href="export.php?type=scholarships&search=<?php echo urlencode($search); ?>&year=<?php echo urlencode($filter_year); ?>&name=<?php echo urlencode($filter_name); ?>&type_filter=<?php echo urlencode($filter_type); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
+                        <a href="export.php?type=scholarships&search=<?php echo urlencode($search); ?>&year=<?php echo urlencode($filter_year); ?>&name=<?php echo urlencode($filter_name); ?>&type_filter=<?php echo urlencode($filter_type); ?>&sort=<?php echo urlencode($order_by); ?>&order=<?php echo urlencode($order); ?>" class="btn btn-success px-4" title="Export to Excel">Export</a>
                     </div>
                 </div>
             </form>
@@ -129,12 +129,13 @@ $result = $conn->query($sql);
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
-            <th><a href="?sort=ss_year&order=ASC">Year</a></th>
-            <th><a href="?sort=ss_name&order=ASC">Name</a></th>
-            <th><a href="?sort=ss_type&order=ASC">Type</a></th>
-            <th><a href="?sort=ss_start&order=ASC">Start Date</a></th>
-            <th><a href="?sort=ss_end&order=ASC">End Date</a></th>
-            <th><a href="?sort=ss_amount&order=ASC">Amount</a></th>
+            <?php $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; ?>
+            <th><a href="?sort=ss_year&order=<?php echo ($order_by == 'ss_year') ? $next_order : 'ASC'; ?>">Year</a></th>
+            <th><a href="?sort=ss_name&order=<?php echo ($order_by == 'ss_name') ? $next_order : 'ASC'; ?>">Name</a></th>
+            <th><a href="?sort=ss_type&order=<?php echo ($order_by == 'ss_type') ? $next_order : 'ASC'; ?>">Type</a></th>
+            <th><a href="?sort=ss_start&order=<?php echo ($order_by == 'ss_start') ? $next_order : 'ASC'; ?>">Start Date</a></th>
+            <th><a href="?sort=ss_end&order=<?php echo ($order_by == 'ss_end') ? $next_order : 'DESC'; ?>">End Date</a></th>
+            <th><a href="?sort=ss_amount&order=<?php echo ($order_by == 'ss_amount') ? $next_order : 'ASC'; ?>">Amount</a></th>
             
             
             <th>Actions</th>

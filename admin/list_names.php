@@ -102,6 +102,13 @@ if (!empty($search)) {
                 OR student_master.stu_program LIKE '%$safe_search%')";
 }
 
+$order_by = isset($_GET['sort']) ? $_GET['sort'] : 'student_master.stu_fname';
+$order = isset($_GET['order']) && $_GET['order'] == 'DESC' ? 'DESC' : 'ASC';
+
+$valid_columns = ['student_master.stu_enroll', 'student_master.stu_fname', 'student_master.stu_gender', 'ss_master.ss_year', 'student_master.stu_campus', 'student_master.stu_college', 'student_master.stu_program'];
+if (!in_array($order_by, $valid_columns)) $order_by = 'student_master.stu_fname';
+
+$sql .= " ORDER BY $order_by $order";
 $result = $conn->query($sql);
 ?>
 
@@ -183,7 +190,7 @@ $result = $conn->query($sql);
         </div>
         <div class="col-md-3 d-flex gap-1">
             <button type="submit" class="btn btn-primary w-50">Filter</button>
-            <a href="export.php?type=list_names&ss_id=<?php echo urlencode($ss_id); ?>&gender=<?php echo urlencode($gender_filter); ?>&enroll=<?php echo urlencode($enroll_filter); ?>&course=<?php echo urlencode($course_filter); ?>&campus=<?php echo urlencode($campus_filter); ?>&college=<?php echo urlencode($college_filter); ?>&year=<?php echo urlencode($year_filter); ?>" class="btn btn-success w-50" title="Export to Excel">Export</a>
+            <a href="export.php?type=list_names&ss_id=<?php echo urlencode($ss_id); ?>&gender=<?php echo urlencode($gender_filter); ?>&enroll=<?php echo urlencode($enroll_filter); ?>&course=<?php echo urlencode($course_filter); ?>&campus=<?php echo urlencode($campus_filter); ?>&college=<?php echo urlencode($college_filter); ?>&year=<?php echo urlencode($year_filter); ?>&sort=<?php echo urlencode($order_by); ?>&order=<?php echo urlencode($order); ?>" class="btn btn-success w-50" title="Export to Excel">Export</a>
         </div>
     </div>
 </form>
@@ -192,13 +199,17 @@ $result = $conn->query($sql);
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
-            <th>Enrollment No</th>
-            <th>Student Name</th>
-            <th>Gender</th>
-            <th>Year</th>
-            <th>Campus</th>
-            <th>College</th>
-            <th>Course</th>
+            <?php 
+            $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; 
+            $base_url = "?ss_id=" . urlencode($ss_id) . "&ss_name=" . urlencode($ss_name) . "&gender_filter=" . urlencode($gender_filter) . "&enroll_filter=" . urlencode($enroll_filter) . "&course_filter=" . urlencode($course_filter) . "&campus_filter=" . urlencode($campus_filter) . "&college_filter=" . urlencode($college_filter) . "&year_filter=" . urlencode($year_filter);
+            ?>
+            <th><a href="<?php echo $base_url; ?>&sort=student_master.stu_enroll&order=<?php echo ($order_by == 'student_master.stu_enroll') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Enrollment No</a></th>
+            <th><a href="<?php echo $base_url; ?>&sort=student_master.stu_fname&order=<?php echo ($order_by == 'student_master.stu_fname') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Student Name</a></th>
+            <th><a href="<?php echo $base_url; ?>&sort=student_master.stu_gender&order=<?php echo ($order_by == 'student_master.stu_gender') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Gender</a></th>
+            <th><a href="<?php echo $base_url; ?>&sort=ss_master.ss_year&order=<?php echo ($order_by == 'ss_master.ss_year') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Year</a></th>
+            <th><a href="<?php echo $base_url; ?>&sort=student_master.stu_campus&order=<?php echo ($order_by == 'student_master.stu_campus') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Campus</a></th>
+            <th><a href="<?php echo $base_url; ?>&sort=student_master.stu_college&order=<?php echo ($order_by == 'student_master.stu_college') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">College</a></th>
+            <th><a href="<?php echo $base_url; ?>&sort=student_master.stu_program&order=<?php echo ($order_by == 'student_master.stu_program') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Course</a></th>
             <th>Actions</th>
         </tr>
     </thead>

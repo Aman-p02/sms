@@ -12,6 +12,9 @@ if ($type === 'students') {
     $filter_college = isset($_GET['college']) ? $_GET['college'] : '';
     $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
     $filter_course = isset($_GET['course']) ? $_GET['course'] : '';
+    
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 'stu_id';
+    $order = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
     $sql = "SELECT * FROM `student_master` WHERE 1=1";
     
@@ -35,7 +38,9 @@ if ($type === 'students') {
         $sql .= " AND stu_program = '" . $conn->real_escape_string($filter_course) . "'";
     }
     
-    $sql .= " ORDER BY stu_id ASC";
+    $safe_order_by = $conn->real_escape_string($order_by);
+    $safe_order = ($order === 'DESC') ? 'DESC' : 'ASC';
+    $sql .= " ORDER BY $safe_order_by $safe_order";
     $result = $conn->query($sql);
     $filename = "students_export.xls";
 
@@ -44,6 +49,10 @@ if ($type === 'students') {
     $filter_year = isset($_GET['year']) ? $_GET['year'] : '';
     $filter_name = isset($_GET['name']) ? $_GET['name'] : '';
     $filter_type = isset($_GET['type_filter']) ? $_GET['type_filter'] : '';
+    
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 'ss_end';
+    $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
+
 
     $sql = "SELECT * FROM `ss_master` WHERE 1=1";
     
@@ -64,7 +73,9 @@ if ($type === 'students') {
         $sql .= " AND ss_type = '" . $conn->real_escape_string($filter_type) . "'";
     }
     
-    $sql .= " ORDER BY ss_id ASC";
+    $safe_order_by = $conn->real_escape_string($order_by);
+    $safe_order = ($order === 'DESC') ? 'DESC' : 'ASC';
+    $sql .= " ORDER BY $safe_order_by $safe_order";
     $result = $conn->query($sql);
     $filename = "scholarships_export.xls";
 
@@ -108,6 +119,12 @@ if ($type === 'students') {
         $sql .= " AND student_master.stu_year_level = '" . $conn->real_escape_string($year_filter) . "'";
     }
 
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 'student_master.stu_fname';
+    $order = isset($_GET['order']) && $_GET['order'] == 'DESC' ? 'DESC' : 'ASC';
+
+    $valid_columns = ['student_master.stu_enroll', 'student_master.stu_fname', 'student_master.stu_gender', 'ss_master.ss_year', 'student_master.stu_campus', 'student_master.stu_college', 'student_master.stu_program'];
+    if (!in_array($order_by, $valid_columns)) $order_by = 'student_master.stu_fname';
+
     if (!empty($search)) {
         $safe_search = $conn->real_escape_string($search);
         $sql .= " AND (student_master.stu_fname LIKE '%$safe_search%' 
@@ -117,6 +134,7 @@ if ($type === 'students') {
                     OR student_master.stu_college LIKE '%$safe_search%'
                     OR student_master.stu_program LIKE '%$safe_search%')";
     }
+    $sql .= " ORDER BY $order_by $order";
     $result = $conn->query($sql);
     $filename = "student_list_export.xls";
 
@@ -160,6 +178,12 @@ if ($type === 'students') {
         $sql .= " AND student_master.stu_year_level = '" . $conn->real_escape_string($year_filter) . "'";
     }
 
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 'student_master.stu_fname';
+    $order = isset($_GET['order']) && $_GET['order'] == 'DESC' ? 'DESC' : 'ASC';
+
+    $valid_columns = ['student_master.stu_enroll', 'student_master.stu_fname', 'student_master.stu_gender', 'ss_master.ss_year', 'student_master.stu_campus', 'student_master.stu_college', 'student_master.stu_program', 'ss_master.ss_name'];
+    if (!in_array($order_by, $valid_columns)) $order_by = 'student_master.stu_fname';
+
     if (!empty($search)) {
         $safe_search = $conn->real_escape_string($search);
         $sql .= " AND (student_master.stu_fname LIKE '%$safe_search%' 
@@ -169,6 +193,7 @@ if ($type === 'students') {
                     OR student_master.stu_college LIKE '%$safe_search%'
                     OR student_master.stu_program LIKE '%$safe_search%')";
     }
+    $sql .= " ORDER BY $order_by $order";
     $result = $conn->query($sql);
     $filename = "student_list_type_export.xls";
 
@@ -207,7 +232,13 @@ if ($type === 'students') {
         $sql .= " AND sm.ss_amount = '" . $conn->real_escape_string($filter_amount) . "'";
     }
 
-    $sql .= " ORDER BY sm.ss_year DESC, s.stu_fname ASC";
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 'sm.ss_year';
+    $order = isset($_GET['order']) && $_GET['order'] == 'ASC' ? 'ASC' : 'DESC';
+
+    $valid_columns = ['s.stu_fname', 's.stu_campus', 's.stu_college', 's.stu_program', 'sm.ss_name', 'sm.ss_year', 'sm.ss_amount', 'sc.app_status'];
+    if (!in_array($order_by, $valid_columns)) $order_by = 'sm.ss_year';
+
+    $sql .= " ORDER BY $order_by $order";
     $result = $conn->query($sql);
     $filename = "year_wise_summary_export.xls";
 
@@ -236,11 +267,17 @@ if ($type === 'students') {
     if (!empty($filter_status)) {
         $sql .= " AND s.app_status = '" . $conn->real_escape_string($filter_status) . "'";
     }
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 's.app_id';
+    $order = isset($_GET['order']) && $_GET['order'] == 'ASC' ? 'ASC' : 'DESC';
+
+    $valid_columns = ['stu.stu_fname', 'ss.ss_type', 'ss.ss_amount', 'ss.ss_name', 'ss.ss_year', 's.app_status', 's.app_id'];
+    if (!in_array($order_by, $valid_columns)) $order_by = 's.app_id';
+
     if (!empty($filter_year)) {
         $sql .= " AND ss.ss_year = '" . $conn->real_escape_string($filter_year) . "'";
     }
 
-    $sql .= " ORDER BY s.app_id DESC";
+    $sql .= " ORDER BY $order_by $order";
     $result = $conn->query($sql);
     $filename = "applications_export.xls";
 
@@ -248,16 +285,47 @@ if ($type === 'students') {
 
     $ss_id_filter = isset($_GET['ss_id']) ? $_GET['ss_id'] : '';
 
-    $sql = "SELECT s.app_status, stu.stu_fname, stu.stu_lname, stu.stu_email, stu.stu_program, ss.ss_name 
+    $sql = "SELECT s.app_id, s.app_status, stu.stu_fname, stu.stu_lname, stu.stu_enroll, stu.stu_gender, stu.stu_campus, stu.stu_college, stu.stu_program, ss.ss_name 
             FROM scholarship s
             JOIN student_master stu ON s.stu_id = stu.stu_id
-            JOIN ss_master ss ON s.ss_id = ss.ss_id";
+            JOIN ss_master ss ON s.ss_id = ss.ss_id
+            WHERE 1=1";
+
+    $gender_filter = isset($_GET['gender']) ? $_GET['gender'] : '';
+    $campus_filter = isset($_GET['campus']) ? $_GET['campus'] : '';
+    $college_filter = isset($_GET['college']) ? $_GET['college'] : '';
+    $course_filter = isset($_GET['course']) ? $_GET['course'] : '';
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    $order_by = isset($_GET['sort']) ? $_GET['sort'] : 'stu.stu_fname';
+    $order = isset($_GET['order']) && $_GET['order'] == 'DESC' ? 'DESC' : 'ASC';
+
+    $valid_columns = ['s.app_id', 'stu.stu_fname', 'stu.stu_enroll', 'stu.stu_gender', 'stu.stu_campus', 'stu.stu_college', 'stu.stu_program', 'ss.ss_name', 's.app_status'];
+    if (!in_array($order_by, $valid_columns)) $order_by = 'stu.stu_fname';
 
     if (!empty($ss_id_filter)) {
-        $sql .= " WHERE s.ss_id = '" . $conn->real_escape_string($ss_id_filter) . "'";
+        $sql .= " AND s.ss_id = '" . $conn->real_escape_string($ss_id_filter) . "'";
+    }
+    if (!empty($gender_filter)) {
+        $sql .= " AND stu.stu_gender = '" . $conn->real_escape_string($gender_filter) . "'";
+    }
+    if (!empty($campus_filter)) {
+        $sql .= " AND stu.stu_campus = '" . $conn->real_escape_string($campus_filter) . "'";
+    }
+    if (!empty($college_filter)) {
+        $sql .= " AND stu.stu_college = '" . $conn->real_escape_string($college_filter) . "'";
+    }
+    if (!empty($course_filter)) {
+        $sql .= " AND stu.stu_program = '" . $conn->real_escape_string($course_filter) . "'";
+    }
+    if (!empty($search)) {
+        $safe_search = $conn->real_escape_string($search);
+        $sql .= " AND (stu.stu_fname LIKE '%$safe_search%' 
+                    OR stu.stu_lname LIKE '%$safe_search%'
+                    OR stu.stu_enroll LIKE '%$safe_search%')";
     }
 
-    $sql .= " ORDER BY stu.stu_fname ASC";
+    $sql .= " ORDER BY $order_by $order";
     $result = $conn->query($sql);
     $filename = "applied_students_export.xls";
 
@@ -428,16 +496,29 @@ header("Expires: 0");
         <?php } ?>
     <?php } elseif ($type === 'applied_students') { ?>
         <tr>
+            <th>Sr. No</th>
             <th>Name</th>
-            <th>Email</th>
+            <th>Enrollment No</th>
+            <th>Gender</th>
+            <th>Campus</th>
+            <th>College</th>
             <th>Course</th>
             <th>Scholarship Name</th>
             <th>Status</th>
         </tr>
-        <?php while ($row = $result->fetch_assoc()) { ?>
+        <?php $sr_no = 1; while ($row = $result->fetch_assoc()) { ?>
         <tr>
+            <td><?php echo $sr_no++; ?></td>
             <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
-            <td><?php echo htmlspecialchars($row['stu_email']); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_enroll'] ?? ''); ?></td>
+            <td><?php 
+                if ($row['stu_gender'] == 'M') echo 'Male';
+                elseif ($row['stu_gender'] == 'F') echo 'Female';
+                elseif ($row['stu_gender'] == 'O') echo 'Other';
+                else echo htmlspecialchars($row['stu_gender'] ?? ''); 
+            ?></td>
+            <td><?php echo htmlspecialchars($row['stu_campus'] ?? ''); ?></td>
+            <td><?php echo htmlspecialchars($row['stu_college'] ?? ''); ?></td>
             <td><?php echo htmlspecialchars($row['stu_program']); ?></td>
             <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
             <td><?php echo htmlspecialchars($row['app_status']); ?></td>
