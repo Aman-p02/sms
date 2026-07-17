@@ -113,7 +113,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Applied Students</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -193,14 +193,14 @@ $result = $conn->query($sql);
                         $base_url = "?ss_id=" . urlencode($ss_id_filter) . "&gender_filter=" . urlencode($gender_filter) . "&campus_filter=" . urlencode($campus_filter) . "&college_filter=" . urlencode($college_filter) . "&course_filter=" . urlencode($course_filter) . "&search=" . urlencode($search);
                         ?>
                         <th>Sr. No</th>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_fname&order=<?php echo ($order_by == 'stu.stu_fname') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Name</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_enroll&order=<?php echo ($order_by == 'stu.stu_enroll') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Enrollment No</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_gender&order=<?php echo ($order_by == 'stu.stu_gender') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Gender</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_campus&order=<?php echo ($order_by == 'stu.stu_campus') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Campus</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_college&order=<?php echo ($order_by == 'stu.stu_college') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">College</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_program&order=<?php echo ($order_by == 'stu.stu_program') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Course</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_name&order=<?php echo ($order_by == 'ss.ss_name') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Scholarship Name</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=s.app_status&order=<?php echo ($order_by == 's.app_status') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">Status</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_fname&order=<?php echo ($order_by == 'stu.stu_fname') ? $next_order : 'DESC'; ?>" >Name</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_enroll&order=<?php echo ($order_by == 'stu.stu_enroll') ? $next_order : 'DESC'; ?>" >Enrollment No</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_gender&order=<?php echo ($order_by == 'stu.stu_gender') ? $next_order : 'DESC'; ?>" >Gender</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_campus&order=<?php echo ($order_by == 'stu.stu_campus') ? $next_order : 'DESC'; ?>" >Campus</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_college&order=<?php echo ($order_by == 'stu.stu_college') ? $next_order : 'DESC'; ?>" >College</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_program&order=<?php echo ($order_by == 'stu.stu_program') ? $next_order : 'DESC'; ?>" >Course</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_name&order=<?php echo ($order_by == 'ss.ss_name') ? $next_order : 'DESC'; ?>" >Scholarship Name</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=s.app_status&order=<?php echo ($order_by == 's.app_status') ? $next_order : 'DESC'; ?>" >Status</a></th>
                     </tr>
                 </thead>
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Scholarship Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
  </head>
 
 
@@ -60,7 +60,7 @@ if (isset($_POST['update_profile'])) {
     $stu_lname          = trim($_POST['stu_lname']);    
     $stu_ext            = trim($_POST['stu_ext']); 
     $stu_mname          = trim($_POST['stu_mname']);    
-    $stu_gender         = $_POST['stu_gender'];        
+    $stu_gender         = isset($_POST['stu_gender']) ? $_POST['stu_gender'] : '';        
     $stu_dob            = $_POST['stu_dob'];
     $stu_email          = $_POST['stu_email'];
     $stu_contact        = $_POST['stu_contact'];
@@ -214,38 +214,35 @@ if (isset($_POST['update_profile'])) {
     /*------------ FILE UPLOAD (COR) --------------*/
     /*==================================================*/    
         $message_cor = "";
-        $upload_dir = 'uploads/student/';
-        $fileName = basename($_FILES["stu_cor"]["name"]);
-        $fileTmp  = $_FILES["stu_cor"]["tmp_name"];
-        $fileSize = $_FILES["stu_cor"]["size"];
-        
-        // Rename File
-        $cor_path = $upload_dir.$stu_enroll."_cor.jpg";        
+        if (isset($_FILES["stu_cor"]) && $_FILES["stu_cor"]["error"] == 0 && !empty($_FILES["stu_cor"]["name"])) {
+            $upload_dir = 'uploads/post_scholarship/';
+            $fileName = basename($_FILES["stu_cor"]["name"]);
+            $fileTmp  = $_FILES["stu_cor"]["tmp_name"];
+            $fileSize = $_FILES["stu_cor"]["size"];
+            
+            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            // Rename File
+            $cor_path = $upload_dir.$stu_enroll."_cor.".$fileExt;        
 
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'pdf'];
-        $fileExt = strtolower(pathinfo($cor_path, PATHINFO_EXTENSION));
-        
-        if (in_array($fileExt, $allowedTypes)) {
-            if ($fileSize < 2000000) { // 2MB limit
-                if (move_uploaded_file($fileTmp, $cor_path)) {
-
-                    // Save path in DB
-                    $stmt = $conn->prepare("UPDATE `student_master` SET `stu_cor`= '".$cor_path."' WHERE `stu_id` = '".$stu_id."' ");
-                    if ($stmt->execute()) {
-                        #echo "File uploaded and saved successfully!";
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'pdf'];
+            
+            if (in_array($fileExt, $allowedTypes)) {
+                if ($fileSize < 2000000) { // 2MB limit
+                    if (move_uploaded_file($fileTmp, $cor_path)) {
+                        // Save path in DB
+                        $stmt = $conn->prepare("UPDATE `student_master` SET `stu_cor`= '".$cor_path."' WHERE `stu_id` = '".$stu_id."' ");
+                        if (!$stmt->execute()) {
+                            $message_cor = "Database error!";
+                        }
                     } else {
-                        $message_cor = "Database error!";
+                        $message_cor =  "File upload failed!";
                     }
                 } else {
-                    $message_cor =  "File upload failed!";
+                    $message_cor =  "File size must be less than 2MB!";
                 }
-
             } else {
-                $message_cor =  "File size must be less than 2MB!";
+                $message_cor =  "Only JPG, JPEG, PNG, PDF allowed!";
             }
-
-        } else {
-            $message_cor =  "Only JPG, JPEG, PNG, PDF allowed!";
         }
         
         /*FILE UPLOAD OVER*/
@@ -254,38 +251,35 @@ if (isset($_POST['update_profile'])) {
     /*------------ FILE UPLOAD (Disability Certificate) --------------*/
     /*==================================================*/    
         $message_dc = "";
-        $upload_dir = 'uploads/student/';
-        $fileName = basename($_FILES["stu_disability"]["name"]);
-        $fileTmp  = $_FILES["stu_disability"]["tmp_name"];
-        $fileSize = $_FILES["stu_disability"]["size"];
-        
-        // Rename File
-        $dc_path = $upload_dir.$stu_enroll."_dc.pdf";        
+        if (isset($_FILES["stu_disability"]) && $_FILES["stu_disability"]["error"] == 0 && !empty($_FILES["stu_disability"]["name"])) {
+            $upload_dir = 'uploads/post_scholarship/';
+            $fileName = basename($_FILES["stu_disability"]["name"]);
+            $fileTmp  = $_FILES["stu_disability"]["tmp_name"];
+            $fileSize = $_FILES["stu_disability"]["size"];
+            
+            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            // Rename File
+            $dc_path = $upload_dir.$stu_enroll."_dc.".$fileExt;        
 
-        $allowedTypes = ['pdf'];
-        $fileExt = strtolower(pathinfo($dc_path, PATHINFO_EXTENSION));
-        
-        if (in_array($fileExt, $allowedTypes)) {
-            if ($fileSize < 2000000) { // 2MB limit
-                if (move_uploaded_file($fileTmp, $dc_path)) {
-
-                    // Save path in DB
-                    $stmt = $conn->prepare("UPDATE `student_master` SET `stu_disability`= '".$dc_path."' WHERE `stu_id` = '".$stu_id."' ");
-                    if ($stmt->execute()) {
-                        #echo "File uploaded and saved successfully!";
+            $allowedTypes = ['pdf', 'jpg', 'jpeg', 'png'];
+            
+            if (in_array($fileExt, $allowedTypes)) {
+                if ($fileSize < 2000000) { // 2MB limit
+                    if (move_uploaded_file($fileTmp, $dc_path)) {
+                        // Save path in DB
+                        $stmt = $conn->prepare("UPDATE `student_master` SET `stu_disability`= '".$dc_path."' WHERE `stu_id` = '".$stu_id."' ");
+                        if (!$stmt->execute()) {
+                            $message_dc = "Database error!";
+                        }
                     } else {
-                        $message_dc = "Database error!";
+                        $message_dc = "File upload failed!";
                     }
                 } else {
-                    $message_dc = "File upload failed!";
+                    $message_dc = "File size must be less than 2MB!";
                 }
-
             } else {
-                $message_dc = "File size must be less than 2MB!";
+                $message_dc = "Only PDF, JPG, PNG allowed!";
             }
-
-        } else {
-            $message_dc = "Only PDF allowed!";
         }
     
 }
@@ -582,7 +576,7 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Campus</label>
                                 <div class="col-sm-8">
-                                    <?php if ($is_admin && $user['stu_campus'] != ''): ?>
+                                    <?php if (!$is_admin && $user['stu_campus'] != ''): ?>
                                         <input type="hidden" name="stu_campus" value="<?php echo htmlspecialchars($user['stu_campus']); ?>">
                                         <select class="form-select mb-3" disabled>
                                     <?php else: ?>
@@ -615,7 +609,7 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">College</label>
                                 <div class="col-sm-8">
-                                    <?php if ($is_admin && $user['stu_college'] != ''): ?>
+                                    <?php if (!$is_admin && $user['stu_college'] != ''): ?>
                                         <input type="hidden" name="stu_college" value="<?php echo htmlspecialchars($user['stu_college']); ?>">
                                         <select class="form-select mb-3" disabled>
                                     <?php else: ?>
@@ -649,7 +643,7 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Course</label>
                                 <div class="col-sm-8">
-                                    <?php if ($is_admin && $user['stu_program'] != ''): ?>
+                                    <?php if (!$is_admin && $user['stu_program'] != ''): ?>
                                         <input type="hidden" name="stu_program" value="<?php echo htmlspecialchars($user['stu_program']); ?>">
                                         <select class="form-select mb-3" disabled>
                                     <?php else: ?>
@@ -684,7 +678,14 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Admission Year</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name = "stu_adm_year" value="<?php echo $user['stu_adm_year']; ?>">
+                                    <select class="form-select" name="stu_adm_year">
+                                        <option value="">--- Select Year ---</option>
+                                        <option value="2022-23" <?php if($user['stu_adm_year']=='2022-23') echo 'selected'; ?>>2022-23</option>
+                                        <option value="2023-24" <?php if($user['stu_adm_year']=='2023-24') echo 'selected'; ?>>2023-24</option>
+                                        <option value="2024-25" <?php if($user['stu_adm_year']=='2024-25') echo 'selected'; ?>>2024-25</option>
+                                        <option value="2025-26" <?php if($user['stu_adm_year']=='2025-26') echo 'selected'; ?>>2025-26</option>
+                                        <option value="2026-27" <?php if($user['stu_adm_year']=='2026-27') echo 'selected'; ?>>2026-27</option>
+                                    </select>
                                 </div>
                                 </div>
                             </div>
@@ -711,7 +712,12 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Current Semester</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name = "stu_sem" value="<?php echo $user['stu_sem']; ?>">
+                                    <select class="form-select" name="stu_sem">
+                                        <option value="">--- Select Semester ---</option>
+                                        <?php for($i=1; $i<=8; $i++): ?>
+                                            <option value="<?php echo $i; ?>" <?php if($user['stu_sem']==$i) echo 'selected'; ?>><?php echo $i; ?></option>
+                                        <?php endfor; ?>
+                                    </select>
                                 </div>
                                 </div>
                             </div>
@@ -720,7 +726,15 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Student Grade</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name = "stu_grade" value="<?php echo $user['stu_grade']; ?>">
+                                    <select class="form-select" name="stu_grade">
+                                        <option value="">--- Select Grade ---</option>
+                                        <option value="A" <?php if($user['stu_grade']=='A') echo 'selected'; ?>>A</option>
+                                        <option value="B" <?php if($user['stu_grade']=='B') echo 'selected'; ?>>B</option>
+                                        <option value="C" <?php if($user['stu_grade']=='C') echo 'selected'; ?>>C</option>
+                                        <option value="D" <?php if($user['stu_grade']=='D') echo 'selected'; ?>>D</option>
+                                        <option value="E" <?php if($user['stu_grade']=='E') echo 'selected'; ?>>E</option>
+                                        <option value="F" <?php if($user['stu_grade']=='F') echo 'selected'; ?>>F</option>
+                                    </select>
                                 </div>
                                 </div>
                             </div>
@@ -748,7 +762,18 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">COR</label>
                                 <div class="col-sm-8">
-                                    <input type="file" class="form-control" name = "stu_cor" id="stu_cor">
+                                    <?php if(!empty($user['stu_cor'])): ?>
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control bg-light text-muted" readonly value="<?php echo htmlspecialchars(basename($user['stu_cor'])); ?>">
+                                            <a href="<?php echo htmlspecialchars($user['stu_cor']); ?>" target="_blank" class="btn btn-primary"><i class="bi bi-eye"></i> View Document</a>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('cor_file_div').classList.toggle('d-none')">Change</button>
+                                        </div>
+                                        <div id="cor_file_div" class="d-none">
+                                            <input type="file" class="form-control" name="stu_cor" id="stu_cor">
+                                        </div>
+                                    <?php else: ?>
+                                        <input type="file" class="form-control" name="stu_cor" id="stu_cor">
+                                    <?php endif; ?>
                                 </div>
                                 </div>
                             </div>
@@ -921,7 +946,18 @@ $complete = $row5['complete'];
                                <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Disability Certificate</label>
                                 <div class="col-sm-8">
-                                    <input type="file" class="form-control" name = "stu_disability">
+                                    <?php if(!empty($user['stu_disability'])): ?>
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control bg-light text-muted" readonly value="<?php echo htmlspecialchars(basename($user['stu_disability'])); ?>">
+                                            <a href="<?php echo htmlspecialchars($user['stu_disability']); ?>" target="_blank" class="btn btn-primary"><i class="bi bi-eye"></i> View Document</a>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('dc_file_div').classList.toggle('d-none')">Change</button>
+                                        </div>
+                                        <div id="dc_file_div" class="d-none">
+                                            <input type="file" class="form-control" name="stu_disability">
+                                        </div>
+                                    <?php else: ?>
+                                        <input type="file" class="form-control" name="stu_disability">
+                                    <?php endif; ?>
                                 </div>
                                 </div>                                
                             </div>
@@ -997,7 +1033,7 @@ $complete = $row5['complete'];
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

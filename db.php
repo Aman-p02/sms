@@ -4,6 +4,10 @@ $username = "root";
 $password = "";
 $database = "sms";
 
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', '/' . basename(__DIR__) . '/');
+}
+
 // Create connection
 $conn = new mysqli($host, $username, $password, $database);
 

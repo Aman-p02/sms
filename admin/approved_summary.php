@@ -41,7 +41,13 @@ if (!empty($filter_scholarship)) {
     $sql .= " AND sm.ss_name = '" . $conn->real_escape_string($filter_scholarship) . "'";
 }
 
-$sql .= " GROUP BY sm.ss_year ORDER BY sm.ss_year DESC";
+$order_by = isset($_GET['sort']) ? $_GET['sort'] : 'sm.ss_year';
+$order = isset($_GET['order']) && $_GET['order'] == 'ASC' ? 'ASC' : 'DESC';
+
+$valid_columns = ['sm.ss_year', 'Total_Scholarships', 'Total_Beneficiaries', 'Total_Approved_Amount'];
+if (!in_array($order_by, $valid_columns)) $order_by = 'sm.ss_year';
+
+$sql .= " GROUP BY sm.ss_year ORDER BY $order_by $order";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -49,7 +55,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Year-Wise Approved Summary</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -126,11 +132,15 @@ $result = $conn->query($sql);
                 <div class="card-body p-0">
                     <table class="table table-striped table-hover table-bordered mb-0 align-middle">
                         <thead class="table-dark">
+                            <?php 
+                            $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; 
+                            $base_url = "?year=" . urlencode($filter_year) . "&campus=" . urlencode($filter_campus) . "&college=" . urlencode($filter_college) . "&course=" . urlencode($filter_course) . "&scholarship=" . urlencode($filter_scholarship);
+                            ?>
                             <tr>
-                                <th class="text-center">Year</th>
-                                <th class="text-center">No. of Scholarships</th>
-                                <th class="text-center">No. of Beneficiaries</th>
-                                <th class="text-end">Approved Amount for the Year</th>
+                                <th class="text-center"><a href="<?php echo $base_url; ?>&sort=sm.ss_year&order=<?php echo ($order_by == 'sm.ss_year') ? $next_order : 'DESC'; ?>">Year</a></th>
+                                <th class="text-center"><a href="<?php echo $base_url; ?>&sort=Total_Scholarships&order=<?php echo ($order_by == 'Total_Scholarships') ? $next_order : 'DESC'; ?>">No. of Scholarships</a></th>
+                                <th class="text-center"><a href="<?php echo $base_url; ?>&sort=Total_Beneficiaries&order=<?php echo ($order_by == 'Total_Beneficiaries') ? $next_order : 'DESC'; ?>">No. of Beneficiaries</a></th>
+                                <th class="text-end"><a href="<?php echo $base_url; ?>&sort=Total_Approved_Amount&order=<?php echo ($order_by == 'Total_Approved_Amount') ? $next_order : 'DESC'; ?>">Approved Amount for the Year</a></th>
                             </tr>
                         </thead>
                         <tbody>

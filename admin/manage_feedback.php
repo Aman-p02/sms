@@ -7,7 +7,7 @@ include "../db.php";
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard - Manage Feedback</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -26,11 +26,19 @@ include "../db.php";
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Student Name</th>
-                        <th>Feedback</th>
-                        <th>Date Submitted</th>
-                        <th>Status</th>
+                        <?php 
+                        $order_by = isset($_GET['sort']) ? $_GET['sort'] : "f.created_at";
+                        $order = isset($_GET['order']) && $_GET['order'] == 'ASC' ? 'ASC' : 'DESC';
+                        $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; 
+                        
+                        $valid_columns = ['f.id', 's.stu_fname', 'f.feedback_text', 'f.created_at', 'f.status'];
+                        if (!in_array($order_by, $valid_columns)) $order_by = 'f.created_at';
+                        ?>
+                        <th><a href="?sort=f.id&order=<?php echo ($order_by == 'f.id') ? $next_order : 'ASC'; ?>">ID</a></th>
+                        <th><a href="?sort=s.stu_fname&order=<?php echo ($order_by == 's.stu_fname') ? $next_order : 'ASC'; ?>">Student Name</a></th>
+                        <th><a href="?sort=f.feedback_text&order=<?php echo ($order_by == 'f.feedback_text') ? $next_order : 'ASC'; ?>">Feedback</a></th>
+                        <th><a href="?sort=f.created_at&order=<?php echo ($order_by == 'f.created_at') ? $next_order : 'DESC'; ?>">Date Submitted</a></th>
+                        <th><a href="?sort=f.status&order=<?php echo ($order_by == 'f.status') ? $next_order : 'ASC'; ?>">Status</a></th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -40,7 +48,7 @@ include "../db.php";
                     $sql = "SELECT f.id, f.feedback_text, f.status, f.created_at, s.stu_fname, s.stu_lname 
                             FROM feedback f 
                             INNER JOIN student_master s ON f.stu_id = s.stu_id 
-                            ORDER BY f.created_at DESC";
+                            ORDER BY $order_by $order";
                     $result = $conn->query($sql);
 
                     if ($result->num_rows > 0) {

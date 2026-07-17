@@ -1,5 +1,3 @@
-<?php include '..\header.php'; ?>
-    
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', 2592000);
@@ -51,6 +49,7 @@ if (isset($_POST['submit'])) {
 ?>
        
     
+<?php include '..\header.php'; ?>
 <!------------------ BODY ---------------------->
     <!-- Admin Login Section -->
     <section id="admin-login" class="py-5 bg-white" style="min-height: 80vh; display: flex; align-items: center;">
@@ -75,9 +74,12 @@ if (isset($_POST['submit'])) {
                                     <label for="loginID"><i class="bi bi-person-badge text-muted me-1"></i> Username</label>
                                 </div>
                                 
-                                <div class="form-floating mb-4">
+                                <div class="form-floating mb-4 position-relative">
                                     <input type="password" class="form-control rounded-3" id="loginPassword" name="adm_pass" placeholder="Enter your password" required />
                                     <label for="loginPassword"><i class="bi bi-key text-muted me-1"></i> Password</label>
+                                    <button type="button" class="btn border-0 position-absolute end-0 top-50 translate-middle-y toggle-password" tabindex="-1" style="z-index: 10;">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
                                 </div>
                                 
                                 <button type="submit" class="btn btn-danger btn-lg w-100 rounded-pill fw-bold mb-3 shadow-sm" name="submit">
@@ -85,7 +87,7 @@ if (isset($_POST['submit'])) {
                                 </button>
                                 
                                 <div class="text-center mt-3 small fw-medium">
-                                    <a href="/SMS/index.php" class="text-decoration-none text-muted hover-danger"><i class="bi bi-arrow-left me-1"></i> Back to Home</a>
+                                    <a href="<?php echo BASE_PATH; ?>index.php" class="text-decoration-none text-muted hover-danger"><i class="bi bi-arrow-left me-1"></i> Back to Home</a>
                                 </div>
                             </form>
                             <?php

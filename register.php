@@ -1,6 +1,5 @@
-<?php include 'header.php'; ?>
-
 <?php include "db.php"; ?>
+<?php include 'header.php'; ?>
 
 <?php $message = ""; ?>
 
@@ -40,8 +39,8 @@ if (isset($_POST['submit'])) {
 
         
         if ($stmt->execute()) {
-            $message = "<div style='color:green;'>Registration successful!</div>";
-            header("Location: index.php");
+            $message = "<div class='alert alert-success mt-3 text-center'>Registration successful! Redirecting to login...</div>";
+            $message .= "<script>setTimeout(function(){ window.location.href = 'index.php'; }, 2000);</script>";
             #echo "Student registered successfully!";
         } else {
             $message = "<div style='color:red;'>Error occurred!</div>";
@@ -113,7 +112,12 @@ if (isset($_POST['submit'])) {
                             <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Password</label>
                                 <div class="col-sm-8">
-                                    <input type="password" class="form-control" name = "stu_pass" placeholder="Enter password">
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control" name = "stu_pass" placeholder="Enter password">
+                                        <button type="button" class="btn border-0 position-absolute end-0 top-50 translate-middle-y toggle-password" tabindex="-1" style="z-index: 10;">
+                                            <i class="bi bi-eye text-muted"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -121,7 +125,12 @@ if (isset($_POST['submit'])) {
                            <div class="row mb-3">
                                 <label class="col-sm-4 col-form-label">Confirm Password</label>
                                 <div class="col-sm-8">
-                                    <input type="password" class="form-control" name = "stu_confirm_pass" placeholder="Confirm password">
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control" name = "stu_confirm_pass" placeholder="Confirm password">
+                                        <button type="button" class="btn border-0 position-absolute end-0 top-50 translate-middle-y toggle-password" tabindex="-1" style="z-index: 10;">
+                                            <i class="bi bi-eye text-muted"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                     </div>
@@ -136,6 +145,6 @@ if (isset($_POST['submit'])) {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

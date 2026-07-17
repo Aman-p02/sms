@@ -57,8 +57,23 @@ if (isset($_POST['upload_doc'])) {
         if (in_array($fileExt, $allowedTypes)) {
             if ($_FILES['post_doc']['size'] < 5000000) { // 5MB limit
                 $upload_dir = "uploads/post_scholarship/";
-                // Create unique filename: ENROLL_SafeName_TIMESTAMP.ext
-                $newFileName = $stu_enroll . "_" . $doc_name_safe . "_" . time() . "." . $fileExt;
+                $current_year = date("Y");
+                
+                // Get short form of scholarship name
+                $words = explode(' ', str_replace(['/', '-', '&', '(', ')'], ' ', strtoupper(trim($ss_name))));
+                $skip = ['AND', 'IN', 'OF', 'THE', 'FOR', 'TO', 'A'];
+                $ss_name_short = '';
+                foreach($words as $w) {
+                    $w = trim($w);
+                    if(empty($w) || in_array($w, $skip)) continue;
+                    $ss_name_short .= $w[0];
+                }
+                if (empty($ss_name_short)) {
+                    $ss_name_short = substr(preg_replace('/[^a-zA-Z0-9]/', '', $ss_name), 0, 5);
+                }
+
+                // Create unique filename: Enrollment_ScholarshipShort_Year_Timestamp.ext
+                $newFileName = $stu_enroll . "_" . $ss_name_short . "_" . $current_year . "_" . time() . "." . $fileExt;
                 $target_path = $upload_dir . $newFileName;
 
                 if (move_uploaded_file($_FILES['post_doc']['tmp_name'], $target_path)) {
@@ -90,7 +105,14 @@ if (isset($_POST['upload_doc'])) {
 
 // Fetch previously uploaded documents for this student
 $upload_dir = "uploads/post_scholarship/";
-$uploaded_files = glob($upload_dir . $stu_enroll . "_*.*");
+$uploaded_files = glob($upload_dir . "*_" . $stu_enroll . "_*.*");
+
+// Also try the old format just in case
+$old_format_files = glob($upload_dir . $stu_enroll . "_*.*");
+if ($old_format_files) {
+    $uploaded_files = array_merge($uploaded_files, $old_format_files);
+}
+$uploaded_files = array_unique($uploaded_files);
 
 ?>
 
@@ -100,8 +122,8 @@ $uploaded_files = glob($upload_dir . $stu_enroll . "_*.*");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post-Scholarship Operations - SMS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
     <style>
         .card-custom { border-radius: 12px; border: none; }
         .upload-box {
@@ -249,6 +271,6 @@ $uploaded_files = glob($upload_dir . $stu_enroll . "_*.*");
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

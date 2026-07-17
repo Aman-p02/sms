@@ -63,7 +63,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Approve / Reject Applications</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -162,12 +162,12 @@ $result = $conn->query($sql);
                         $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; 
                         $base_url = "?type=" . urlencode($filter_type) . "&name=" . urlencode($filter_name) . "&status=" . urlencode($filter_status) . "&year=" . urlencode($filter_year);
                         ?>
-                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_fname&order=<?php echo ($order_by == 'stu.stu_fname') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Student</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_type&order=<?php echo ($order_by == 'ss.ss_type') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Type of Scholarship</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_amount&order=<?php echo ($order_by == 'ss.ss_amount') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Amount of Scholarship</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_name&order=<?php echo ($order_by == 'ss.ss_name') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Name of Scholarship</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_year&order=<?php echo ($order_by == 'ss.ss_year') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Year</a></th>
-                        <th><a href="<?php echo $base_url; ?>&sort=s.app_status&order=<?php echo ($order_by == 's.app_status') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Status</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=stu.stu_fname&order=<?php echo ($order_by == 'stu.stu_fname') ? $next_order : 'ASC'; ?>" >Student</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_type&order=<?php echo ($order_by == 'ss.ss_type') ? $next_order : 'ASC'; ?>" >Type of Scholarship</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_amount&order=<?php echo ($order_by == 'ss.ss_amount') ? $next_order : 'ASC'; ?>" >Amount of Scholarship</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_name&order=<?php echo ($order_by == 'ss.ss_name') ? $next_order : 'ASC'; ?>" >Name of Scholarship</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=ss.ss_year&order=<?php echo ($order_by == 'ss.ss_year') ? $next_order : 'ASC'; ?>" >Year</a></th>
+                        <th><a href="<?php echo $base_url; ?>&sort=s.app_status&order=<?php echo ($order_by == 's.app_status') ? $next_order : 'ASC'; ?>" >Status</a></th>
                         <th>Action</th>
                     </tr>
                 </thead>

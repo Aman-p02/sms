@@ -1,5 +1,3 @@
-<?php include 'header.php'; ?>
-    
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_maxlifetime', 2592000);
@@ -28,7 +26,7 @@ $application_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN 
 $total_applications = $application_res->fetch_assoc()['cnt'] ?? 0;
 
 // Total Applicants
-$applicant_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id");
+$applicant_res = $conn->query("SELECT COUNT(DISTINCT s.stu_id) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id");
 $total_applicants = $applicant_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Scholarships
@@ -36,7 +34,7 @@ $approved_ss_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN 
 $approved_scholarships = $approved_ss_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Candidates
-$approved_cand_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id WHERE s.app_status = 'Approved'");
+$approved_cand_res = $conn->query("SELECT COUNT(DISTINCT s.stu_id) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id WHERE s.app_status = 'Approved'");
 $approved_candidates = $approved_cand_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Amount
@@ -87,6 +85,7 @@ if (isset($_POST['submit'])) {
 ?>
        
     
+<?php include 'header.php'; ?>
 <!------------------ BODY ---------------------->
     <!-- Hero Section -->
     <section class="py-5 text-center bg-white border-bottom">
@@ -128,9 +127,12 @@ if (isset($_POST['submit'])) {
                                     <label for="loginID"><i class="bi bi-person text-muted me-1"></i> Enrollment No</label>
                                 </div>
                                 
-                                <div class="form-floating mb-4">
+                                <div class="form-floating mb-4 position-relative">
                                     <input type="password" class="form-control rounded-3" id="loginPassword" name="stu_pass" placeholder="Enter your password" required />
                                     <label for="loginPassword"><i class="bi bi-key text-muted me-1"></i> Password</label>
+                                    <button type="button" class="btn border-0 position-absolute end-0 top-50 translate-middle-y toggle-password" tabindex="-1" style="z-index: 10;">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </button>
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold mb-3 shadow-sm" name="submit">
@@ -229,66 +231,75 @@ if (isset($_POST['submit'])) {
     </section>
 
     <!-- Statistics Section -->
-    <section id="statistics" class="py-5 bg-white text-center border-top border-bottom">
-        <div class="container">
-            <h2 class="fw-bold text-dark display-6 mb-5">Program Impact</h2>
+    <section id="statistics" class="py-5 impact-section">
+        <div class="container position-relative z-1 py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark display-5 mb-3">Our Program's Impact</h2>
+                <div class="mx-auto rounded" style="width: 80px; height: 4px; background: linear-gradient(90deg, #60a5fa, #c084fc);"></div>
+            </div>
             
             <div class="row g-4 mb-4">
+                <!-- Card 1 -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
-                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
-                            <i class="bi bi-award text-primary fs-3"></i>
+                    <div class="modern-card p-4 h-100 text-center">
+                        <div class="icon-wrapper-primary">
+                            <i class="bi bi-award fs-1"></i>
                         </div>
                         <h5 class="text-muted fw-bold mb-3">Total Scholarships</h5>
-                        <h2 class="fw-bold text-dark display-5"><?php echo number_format($total_scholarships); ?></h2>
+                        <h2 class="fw-bold text-dark display-4"><?php echo number_format($total_scholarships); ?></h2>
                     </div>
                 </div>
+                <!-- Card 2 -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
-                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
-                            <i class="bi bi-file-earmark-text text-primary fs-3"></i>
+                    <div class="modern-card p-4 h-100 text-center">
+                        <div class="icon-wrapper-primary">
+                            <i class="bi bi-file-earmark-text fs-1"></i>
                         </div>
                         <h5 class="text-muted fw-bold mb-3">Total Applications</h5>
-                        <h2 class="fw-bold text-dark display-5"><?php echo number_format($total_applications); ?></h2>
+                        <h2 class="fw-bold text-dark display-4"><?php echo number_format($total_applications); ?></h2>
                     </div>
                 </div>
+                <!-- Card 3 -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
-                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
-                            <i class="bi bi-people text-primary fs-3"></i>
+                    <div class="modern-card p-4 h-100 text-center">
+                        <div class="icon-wrapper-primary">
+                            <i class="bi bi-people fs-1"></i>
                         </div>
                         <h5 class="text-muted fw-bold mb-3">Total Applicants</h5>
-                        <h2 class="fw-bold text-dark display-5"><?php echo number_format($total_applicants); ?></h2>
+                        <h2 class="fw-bold text-dark display-4"><?php echo number_format($total_applicants); ?></h2>
                     </div>
                 </div>
             </div>
             
             <div class="row g-4">
+                <!-- Card 4 -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
-                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
-                            <i class="bi bi-check-circle text-success fs-3"></i>
+                    <div class="modern-card p-4 h-100 text-center">
+                        <div class="icon-wrapper-primary">
+                            <i class="bi bi-check-circle fs-1"></i>
                         </div>
                         <h5 class="text-muted fw-bold mb-3">Approved Scholarships</h5>
-                        <h2 class="fw-bold text-success display-5"><?php echo number_format($approved_scholarships); ?></h2>
+                        <h2 class="fw-bold text-dark display-4"><?php echo number_format($approved_scholarships); ?></h2>
                     </div>
                 </div>
+                <!-- Card 5 -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
-                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
-                            <i class="bi bi-person-check text-success fs-3"></i>
+                    <div class="modern-card p-4 h-100 text-center">
+                        <div class="icon-wrapper-primary">
+                            <i class="bi bi-person-check fs-1"></i>
                         </div>
                         <h5 class="text-muted fw-bold mb-3">Approved Candidates</h5>
-                        <h2 class="fw-bold text-success display-5"><?php echo number_format($approved_candidates); ?></h2>
+                        <h2 class="fw-bold text-dark display-4"><?php echo number_format($approved_candidates); ?></h2>
                     </div>
                 </div>
+                <!-- Card 6 -->
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-lift">
-                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3 mx-auto">
-                            <i class="bi bi-cash-stack text-success fs-3"></i>
+                    <div class="modern-card p-4 h-100 text-center">
+                        <div class="icon-wrapper-primary">
+                            <i class="bi bi-cash-stack fs-1"></i>
                         </div>
-                        <h5 class="text-muted fw-bold mb-3">Total Funds Disbursed</h5>
-                        <h2 class="fw-bold text-success display-5"><?php echo number_format($total_approved_amount); ?></h2>
+                        <h5 class="text-muted fw-bold mb-3">Funds Disbursed</h5>
+                        <h2 class="fw-bold text-dark display-4"><span class="fs-4 text-dark opacity-75">₹</span> <?php echo number_format($total_approved_amount); ?></h2>
                     </div>
                 </div>
             </div>
@@ -316,7 +327,12 @@ if (isset($_POST['submit'])) {
 
             <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" class="form-control" placeholder="Enter your password">
+                <div class="position-relative">
+                    <input type="password" class="form-control" placeholder="Enter your password">
+                    <button type="button" class="btn border-0 position-absolute end-0 top-50 translate-middle-y toggle-password" style="z-index: 10;">
+                        <i class="bi bi-eye text-muted"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Login</button>
@@ -432,11 +448,12 @@ if (isset($_POST['submit'])) {
                     flex-direction: column;
                 }
                 .feedback-profile-img {
-                    width: 50px;
-                    height: 50px;
+                    width: 50px !important;
+                    height: 50px !important;
                     border-radius: 50%;
                     object-fit: cover;
                     margin-right: 15px;
+                    flex-shrink: 0;
                 }
             </style>
 
@@ -451,9 +468,10 @@ if (isset($_POST['submit'])) {
 
                 if ($feed_res && $feed_res->num_rows > 0) {
                     while ($feed = $feed_res->fetch_assoc()) {
+                        $default_avatar = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#e9ecef" stroke="#ced4da" stroke-width="2"><circle cx="50" cy="50" r="48"/><path d="M50 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0 10c-16 0-35 8-35 25v5h70v-5c0-17-19-25-35-25z" fill="#adb5bd"/></svg>');
                         $img_src = (!empty($feed['stu_profilepic']) && file_exists("uploads/profile_photos/" . $feed['stu_profilepic'])) 
                             ? "uploads/profile_photos/" . $feed['stu_profilepic'] 
-                            : "https://ui-avatars.com/api/?name=" . urlencode($feed['stu_fname'] . ' ' . $feed['stu_lname']) . "&background=0D8ABC&color=fff";
+                            : $default_avatar;
                 ?>
                 <div class="card shadow-sm p-4 h-100 feedback-card">
                     <p class="fst-italic mb-4">“<?php echo htmlspecialchars($feed['feedback_text']); ?>”</p>

@@ -68,7 +68,7 @@ if (isset($_POST['change_password'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Scholarship Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
  </head>
 
 <body>
@@ -97,11 +97,26 @@ if (isset($_POST['change_password'])) {
                 <div class="card p-3 shadow card-custom">
                     <form method="post">
                         <label class="form-label">Current Password</label>
-                        <input type="password" class="form-control mb-2" name="old_password">
+                        <div class="position-relative mb-2">
+                            <input type="password" class="form-control" name="old_password">
+                            <button type="button" class="btn border-0 position-absolute end-0 bottom-0 toggle-password" tabindex="-1" style="margin-bottom: 2px;">
+                                <i class="bi bi-eye text-muted"></i>
+                            </button>
+                        </div>
                         <label class="form-label">New Password</label>
-                        <input type="password" class="form-control mb-2" name="new_password">
+                        <div class="position-relative mb-2">
+                            <input type="password" class="form-control" name="new_password">
+                            <button type="button" class="btn border-0 position-absolute end-0 bottom-0 toggle-password" tabindex="-1" style="margin-bottom: 2px;">
+                                <i class="bi bi-eye text-muted"></i>
+                            </button>
+                        </div>
                         <label class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control mb-2" name="confirm_password">
+                        <div class="position-relative mb-2">
+                            <input type="password" class="form-control" name="confirm_password">
+                            <button type="button" class="btn border-0 position-absolute end-0 bottom-0 toggle-password" tabindex="-1" style="margin-bottom: 2px;">
+                                <i class="bi bi-eye text-muted"></i>
+                            </button>
+                        </div>
                         
                         <button class="btn btn-danger mt-2" name="change_password">Change Password</button>
                     </form>
@@ -114,7 +129,7 @@ if (isset($_POST['change_password'])) {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

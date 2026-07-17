@@ -56,7 +56,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -130,12 +130,12 @@ $result = $conn->query($sql);
     <thead class="table-dark">
         <tr>
             <?php $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; ?>
-            <th><a href="?sort=ss_year&order=<?php echo ($order_by == 'ss_year') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Year</a></th>
-            <th><a href="?sort=ss_name&order=<?php echo ($order_by == 'ss_name') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Name</a></th>
-            <th><a href="?sort=ss_type&order=<?php echo ($order_by == 'ss_type') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Type</a></th>
-            <th><a href="?sort=ss_start&order=<?php echo ($order_by == 'ss_start') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Start Date</a></th>
-            <th><a href="?sort=ss_end&order=<?php echo ($order_by == 'ss_end') ? $next_order : 'DESC'; ?>" class="text-white text-decoration-none d-block">End Date</a></th>
-            <th><a href="?sort=ss_amount&order=<?php echo ($order_by == 'ss_amount') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Amount</a></th>
+            <th><a href="?sort=ss_year&order=<?php echo ($order_by == 'ss_year') ? $next_order : 'ASC'; ?>" >Year</a></th>
+            <th><a href="?sort=ss_name&order=<?php echo ($order_by == 'ss_name') ? $next_order : 'ASC'; ?>" >Name</a></th>
+            <th><a href="?sort=ss_type&order=<?php echo ($order_by == 'ss_type') ? $next_order : 'ASC'; ?>" >Type</a></th>
+            <th><a href="?sort=ss_start&order=<?php echo ($order_by == 'ss_start') ? $next_order : 'ASC'; ?>" >Start Date</a></th>
+            <th><a href="?sort=ss_end&order=<?php echo ($order_by == 'ss_end') ? $next_order : 'DESC'; ?>" >End Date</a></th>
+            <th><a href="?sort=ss_amount&order=<?php echo ($order_by == 'ss_amount') ? $next_order : 'ASC'; ?>" >Amount</a></th>
             <th>Document</th>
             
             <th>Actions</th>

@@ -11,7 +11,7 @@ $application_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN 
 $total_applications = $application_res->fetch_assoc()['cnt'] ?? 0;
 
 // Total Applicants
-$applicant_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id");
+$applicant_res = $conn->query("SELECT COUNT(DISTINCT s.stu_id) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id");
 $total_applicants = $applicant_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Scholarships
@@ -19,7 +19,7 @@ $approved_ss_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN 
 $approved_scholarships = $approved_ss_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Candidates
-$approved_cand_res = $conn->query("SELECT COUNT(*) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id WHERE s.app_status = 'Approved'");
+$approved_cand_res = $conn->query("SELECT COUNT(DISTINCT s.stu_id) as cnt FROM scholarship s JOIN student_master sm ON s.stu_id = sm.stu_id JOIN ss_master ss ON s.ss_id = ss.ss_id WHERE s.app_status = 'Approved'");
 $approved_candidates = $approved_cand_res->fetch_assoc()['cnt'] ?? 0;
 
 // Approved Amount
@@ -32,8 +32,8 @@ $total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/bootstrap-icons.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet">
 </head>
 

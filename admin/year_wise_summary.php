@@ -45,6 +45,19 @@ function getShortCourseName($fullName) {
     return empty($acro) ? $fullName : $acro;
 }
 
+function getShortCampusName($fullName) {
+    $name = trim($fullName);
+    if (stripos($name, 'NEMSU ') === 0) {
+        return substr($name, 6);
+    }
+    return $name;
+}
+
+function getShortCollegeName($fullName) {
+    $parts = explode('-', $fullName);
+    return trim($parts[0]);
+}
+
 // Fetch distinct values for filters
 $years = $conn->query("SELECT DISTINCT ss_year FROM ss_master WHERE ss_year IS NOT NULL AND ss_year != '' ORDER BY ss_year DESC");
 $campuses = $conn->query("SELECT campus_name as stu_campus FROM campus ORDER BY campus_name ASC");
@@ -111,7 +124,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Admin Report</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -218,16 +231,16 @@ $result = $conn->query($sql);
                                 $next_order = ($order == 'ASC') ? 'DESC' : 'ASC'; 
                                 $base_url = "?year=" . urlencode($filter_year) . "&campus=" . urlencode($filter_campus) . "&college=" . urlencode($filter_college) . "&course=" . urlencode($filter_course) . "&scholarship=" . urlencode($filter_scholarship) . "&gender=" . urlencode($filter_gender) . "&status=" . urlencode($filter_status) . "&search=" . urlencode($search_query);
                                 ?>
-                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_enroll&order=<?php echo ($order_by == 's.stu_enroll') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Enrollment</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_fname&order=<?php echo ($order_by == 's.stu_fname') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Student Name</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_gender&order=<?php echo ($order_by == 's.stu_gender') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Gender</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_campus&order=<?php echo ($order_by == 's.stu_campus') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Campus</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_college&order=<?php echo ($order_by == 's.stu_college') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">College</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_program&order=<?php echo ($order_by == 's.stu_program') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Course</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=sm.ss_name&order=<?php echo ($order_by == 'sm.ss_name') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Scholarship</a></th>
-                                <th class="text-nowrap"><a href="<?php echo $base_url; ?>&sort=sm.ss_year&order=<?php echo ($order_by == 'sm.ss_year') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Year</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=sm.ss_amount&order=<?php echo ($order_by == 'sm.ss_amount') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Amount</a></th>
-                                <th><a href="<?php echo $base_url; ?>&sort=sc.app_status&order=<?php echo ($order_by == 'sc.app_status') ? $next_order : 'ASC'; ?>" class="text-white text-decoration-none d-block">Status</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_enroll&order=<?php echo ($order_by == 's.stu_enroll') ? $next_order : 'ASC'; ?>" >Enrollment</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_fname&order=<?php echo ($order_by == 's.stu_fname') ? $next_order : 'ASC'; ?>" >Student Name</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_gender&order=<?php echo ($order_by == 's.stu_gender') ? $next_order : 'ASC'; ?>" >Gender</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_campus&order=<?php echo ($order_by == 's.stu_campus') ? $next_order : 'ASC'; ?>" >Campus</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_college&order=<?php echo ($order_by == 's.stu_college') ? $next_order : 'ASC'; ?>" >College</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=s.stu_program&order=<?php echo ($order_by == 's.stu_program') ? $next_order : 'ASC'; ?>" >Course</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=sm.ss_name&order=<?php echo ($order_by == 'sm.ss_name') ? $next_order : 'ASC'; ?>" >Scholarship</a></th>
+                                <th class="text-nowrap"><a href="<?php echo $base_url; ?>&sort=sm.ss_year&order=<?php echo ($order_by == 'sm.ss_year') ? $next_order : 'ASC'; ?>" >Year</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=sm.ss_amount&order=<?php echo ($order_by == 'sm.ss_amount') ? $next_order : 'ASC'; ?>" >Amount</a></th>
+                                <th><a href="<?php echo $base_url; ?>&sort=sc.app_status&order=<?php echo ($order_by == 'sc.app_status') ? $next_order : 'ASC'; ?>" >Status</a></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -243,8 +256,8 @@ $result = $conn->query($sql);
                                 <td><?php echo htmlspecialchars($row['stu_enroll'] ?? '-'); ?></td>
                                 <td><?php echo htmlspecialchars($row['stu_fname'] . ' ' . $row['stu_lname']); ?></td>
                                 <td><?php echo htmlspecialchars($row['stu_gender'] == 'M' ? 'Male' : ($row['stu_gender'] == 'F' ? 'Female' : $row['stu_gender'])); ?></td>
-                                <td><?php echo htmlspecialchars($row['stu_campus']); ?></td>
-                                <td><?php echo htmlspecialchars($row['stu_college']); ?></td>
+                                <td><?php echo htmlspecialchars(getShortCampusName($row['stu_campus'])); ?></td>
+                                <td><?php echo htmlspecialchars(getShortCollegeName($row['stu_college'])); ?></td>
                                 <td><?php echo htmlspecialchars(getShortCourseName($row['stu_program'])); ?></td>
                                 <td><?php echo htmlspecialchars($row['ss_name']); ?></td>
                                 <td class="text-nowrap"><?php echo htmlspecialchars($row['ss_year']); ?></td>

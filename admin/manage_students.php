@@ -109,7 +109,7 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -125,6 +125,12 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
 
             <h2 class="fw-bold mb-4">Manage Students</h2>
 
+            <?php if (isset($_GET['msg'])): ?>
+                <div class="alert alert-<?php echo htmlspecialchars($_GET['type'] ?? 'info'); ?> alert-dismissible fade show" role="alert">
+                    <?php echo htmlspecialchars($_GET['msg']); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
            
             
             
@@ -166,14 +172,17 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
         </div>
     </div>
     <div class="row g-2">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <input type="text" name="search" class="form-control" placeholder="Search name, email, enroll..." value="<?php echo htmlspecialchars($search); ?>">
         </div>
         <div class="col-md-2">
             <button class="btn btn-primary w-100">Filter</button>
         </div>
+        <div class="col-md-1">
+            <a href="manage_students.php" class="btn btn-secondary w-100 px-1">Reset</a>
+        </div>
         <div class="col-md-2">
-            <a href="manage_students.php" class="btn btn-secondary w-100">Reset</a>
+            <button type="button" class="btn btn-info w-100 text-white" data-bs-toggle="modal" data-bs-target="#importModal">Import</button>
         </div>
         <div class="col-md-2">
             <a href="<?php echo htmlspecialchars($export_link); ?>" class="btn btn-success w-100">Export</a>
@@ -250,6 +259,37 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
         </div>
     </div>
 </div>
+
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importModalLabel">Import Students</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="import_students.php" method="POST" enctype="multipart/form-data">
+          <div class="modal-body">
+            <div class="mb-3">
+                <label for="csvFile" class="form-label">Upload CSV or Excel (.xlsx) File</label>
+                <input class="form-control" type="file" id="csvFile" name="csvFile" accept=".csv, .xlsx" required>
+                <div class="form-text mt-2">
+                    Please ensure your file has the following headers in the first row:<br>
+                    <strong>stu_enroll, stu_fname, stu_lname, stu_email, stu_pass, stu_program, stu_campus, stu_college</strong>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="import_students.php?download_template=1" class="btn btn-outline-secondary me-auto">Download Template</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Import Data</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

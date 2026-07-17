@@ -91,8 +91,8 @@ if (isset($_FILES['stu_photo']) && $_FILES['stu_photo']['error'] === UPLOAD_ERR_
         $stmt->execute();
         $stmt->close();
 
-        // 7. Delete old photo file if it existed
-        if (!empty($old_photo) && file_exists($upload_dir . $old_photo)) {
+        // 7. Delete old photo file if it existed and is different from the new one
+        if (!empty($old_photo) && $old_photo !== $new_filename && file_exists($upload_dir . $old_photo)) {
             unlink($upload_dir . $old_photo);
         }
 
