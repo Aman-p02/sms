@@ -9,6 +9,7 @@ $ML_FEATURES = [
     'stu_gpa',
     'stu_disabled',
     'stu_marital',
-    'stu_dependent'
+    'stu_dependent',
+    'stu_perc'
 ];
 ?>

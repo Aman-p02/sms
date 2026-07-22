@@ -256,11 +256,13 @@ $export_link = "export.php?type=students&search=".urlencode($search)."&campus=".
         
         <!---------- DISPLAY ENDS --------------->
 
+                <?php include '../footer.php'; ?>
         </div>
     </div>
 </div>
 
-<!-- Import Modal -->
+
+<!-- Edit Student Modal -->
 <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

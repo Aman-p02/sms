@@ -1,30 +1,30 @@
 {
     "LR": {
-        "Accuracy": 0.7967,
-        "Precision": 0.7824,
-        "Recall": 0.9762,
-        "F1-Score": 0.8686,
-        "AUC": 0.8845
+        "Accuracy": 0.6941,
+        "Precision": 0.6931,
+        "Recall": 1,
+        "F1-Score": 0.8187,
+        "AUC": 0.7775
     },
     "DT": {
-        "Accuracy": 0.9082,
-        "Precision": 0.9505,
-        "Recall": 0.9143,
-        "F1-Score": 0.932,
-        "AUC": 0.9045
+        "Accuracy": 0.8191,
+        "Precision": 0.9379,
+        "Recall": 0.7905,
+        "F1-Score": 0.8579,
+        "AUC": 0.8367
     },
     "RFC": {
-        "Accuracy": 0.918,
-        "Precision": 0.9426,
-        "Recall": 0.9381,
-        "F1-Score": 0.9403,
-        "AUC": 0.9576
+        "Accuracy": 0.8454,
+        "Precision": 0.8863,
+        "Recall": 0.8905,
+        "F1-Score": 0.8884,
+        "AUC": 0.9161
     },
     "SVM": {
-        "Accuracy": 0.6098,
-        "Precision": 0.6655,
-        "Recall": 0.8714,
-        "F1-Score": 0.7546,
-        "AUC": 0.3668
+        "Accuracy": 0.6842,
+        "Precision": 0.6887,
+        "Recall": 0.9905,
+        "F1-Score": 0.8125,
+        "AUC": 0.3699
     }
 }

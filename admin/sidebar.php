@@ -1,9 +1,25 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
-$base_url = (basename(getcwd()) === 'admin') ? '' : 'admin/';
-$logout_url = (basename(getcwd()) === 'admin') ? '../logout.php' : 'logout.php';
-$prediction_url = (basename(getcwd()) === 'admin') ? '../prediction.php' : 'prediction.php';
+$base_url = '/SMS/admin/';
+$logout_url = '/SMS/logout.php';
+$prediction_url = '/SMS/prediction.php';
+$outlier_url = '/SMS/outlier.php';
+$cluster_url = '/SMS/cluster.php';
 ?>
+<style>
+/* Force sticky behavior bypassing CSS cache */
+.sidebar {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    z-index: 1020 !important;
+}
+/* Hide scrollbar for a cleaner UI */
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: #495057; border-radius: 10px; }
+</style>
 <!-- SIDEBAR -->
         <div class="col-md-3 col-lg-2 sidebar p-0">
             <h4 class="text-center py-3 border-bottom mb-0">Admin Panel</h4>
@@ -17,5 +33,7 @@ $prediction_url = (basename(getcwd()) === 'admin') ? '../prediction.php' : 'pred
             <a href="<?php echo $base_url; ?>manage_feedback.php" class="<?php if($current_page == 'manage_feedback.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Manage Feedback</a>
             <a href="<?php echo $base_url; ?>settings.php" class="<?php if($current_page == 'settings.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Change Password</a>
             <a href="<?php echo $prediction_url; ?>" class="<?php if($current_page == 'prediction.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Prediction</a>
+            <a href="<?php echo $outlier_url; ?>" class="<?php if($current_page == 'outlier.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Outlier Detection</a>
+            <a href="<?php echo $cluster_url; ?>" class="<?php if($current_page == 'cluster.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Clustering Analysis</a>
             <a href="<?php echo $logout_url; ?>">Logout</a>
         </div>

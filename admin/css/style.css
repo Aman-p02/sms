@@ -1,8 +1,20 @@
 body { background: #f4f6f9; }
 .sidebar {
     min-height: 100vh;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
     background: #212529;
     color: #fff;
+}
+/* Hide scrollbar for cleaner look */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #495057;
+    border-radius: 10px;
 }
 .sidebar a {
     color: #dcdcdc;

@@ -144,6 +144,7 @@ $total_approved_amount = $amount_res->fetch_assoc()['total_amount'] ?? 0;
                     </div>
                 </div>
 
+                <?php include '../footer.php'; ?>
             </div>
         </div>
     </div>

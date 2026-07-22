@@ -79,7 +79,11 @@ if (isset($_POST['post_feedback']) && !$has_submitted) {
             <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="d-flex align-items-center gap-3">
-                    <?php $photo_editable = false; include 'stu_photo_widget.php'; ?>
+                    <?php 
+                        $stu_fname = $student['stu_fname'];
+                        $photo_editable = false; 
+                        include 'stu_photo_widget.php'; 
+                    ?>
                     <h2 class="mb-0">Welcome, <?php echo htmlspecialchars($student['stu_fname']); ?></h2>
                 </div>
             </div>

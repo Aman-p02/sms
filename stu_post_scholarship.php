@@ -23,6 +23,10 @@ $conn->query("CREATE TABLE IF NOT EXISTS `admin_notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
 $message = "";
+if (isset($_SESSION['upload_msg'])) {
+    $message = $_SESSION['upload_msg'];
+    unset($_SESSION['upload_msg']);
+}
 
 // Fetch approved scholarships for this student
 $approved_scholarships = [];
@@ -85,10 +89,12 @@ if (isset($_POST['upload_doc'])) {
                     $stmt_notif->execute();
                     $stmt_notif->close();
 
-                    $message = "<div class='alert alert-success alert-dismissible fade show shadow-sm' role='alert'>
+                    $_SESSION['upload_msg'] = "<div class='alert alert-success alert-dismissible fade show shadow-sm' role='alert'>
                                     <i class='bi bi-check-circle-fill me-2'></i> Document uploaded successfully!
                                     <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
                                 </div>";
+                    header("Location: stu_post_scholarship.php");
+                    exit();
                 } else {
                     $message = "<div class='alert alert-danger'>Failed to move uploaded file.</div>";
                 }

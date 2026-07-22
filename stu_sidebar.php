@@ -29,8 +29,19 @@ $current_page = basename($_SERVER['PHP_SELF']);
         }
         .sidebar {
             min-height: 100vh;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
             background: #0d6efd;
             color: #fff;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #0b5ed7;
+            border-radius: 10px;
         }
         .sidebar a {
             color: white;

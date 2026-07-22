@@ -2,21 +2,20 @@
     "stu_gender": {
         "type": "onehot",
         "values": [
-            "Other",
             "Female",
             "Male",
-            "M"
+            "Other"
         ]
     },
     "stu_grade": {
         "type": "onehot",
         "values": [
-            "C",
-            "A",
             "B",
-            "F",
+            "A",
             "E",
-            "D"
+            "C",
+            "D",
+            "F"
         ]
     },
     "stu_gpa": {
@@ -33,9 +32,9 @@
         "type": "onehot",
         "values": [
             "Single",
+            "Widowed",
             "Divorced",
-            "Married",
-            "Widowed"
+            "Married"
         ]
     },
     "stu_dependent": {
@@ -44,5 +43,8 @@
             "No": 0,
             "Yes": 1
         }
+    },
+    "stu_perc": {
+        "type": "numeric"
     }
 }

@@ -14,10 +14,17 @@ if (file_exists('ml/metrics.json')) {
     $metrics = json_decode(file_get_contents('ml/metrics.json'), true);
 }
 
-include 'header.php';
 ?>
-
-<link href="admin/css/style.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Prediction</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link href="admin/css/style.css" rel="stylesheet">
+</head>
+<body>
 
 <div class="container-fluid">
     <div class="row">
@@ -139,12 +146,14 @@ include 'header.php';
                 </div>
             </div>
 
+            <?php include 'footer.php'; ?>
         </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function() {
     // Retrain Models
@@ -209,4 +218,5 @@ $(document).ready(function() {
 });
 </script>
 
-<?php include 'footer.php'; ?>
+</body>
+</html>
