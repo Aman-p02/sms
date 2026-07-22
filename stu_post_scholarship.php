@@ -230,6 +230,10 @@ $uploaded_files = array_unique($uploaded_files);
                                                 
                                                 // Extract timestamp (last part) and name
                                                 $timestamp = array_pop($parts);
+                                                if (!is_numeric($timestamp)) {
+                                                    $parts[] = $timestamp;
+                                                    $timestamp = filemtime($file);
+                                                }
                                                 array_shift($parts); // Remove enroll
                                                 $doc_name_display = implode(' ', $parts);
                                                 if (empty($doc_name_display)) $doc_name_display = "Document";

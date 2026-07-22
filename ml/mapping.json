@@ -1,0 +1,48 @@
+{
+    "stu_gender": {
+        "type": "onehot",
+        "values": [
+            "Other",
+            "Female",
+            "Male",
+            "M"
+        ]
+    },
+    "stu_grade": {
+        "type": "onehot",
+        "values": [
+            "C",
+            "A",
+            "B",
+            "F",
+            "E",
+            "D"
+        ]
+    },
+    "stu_gpa": {
+        "type": "numeric"
+    },
+    "stu_disabled": {
+        "type": "binary",
+        "values": {
+            "No": 0,
+            "Yes": 1
+        }
+    },
+    "stu_marital": {
+        "type": "onehot",
+        "values": [
+            "Single",
+            "Divorced",
+            "Married",
+            "Widowed"
+        ]
+    },
+    "stu_dependent": {
+        "type": "binary",
+        "values": {
+            "No": 0,
+            "Yes": 1
+        }
+    }
+}

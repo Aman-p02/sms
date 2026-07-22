@@ -2,6 +2,7 @@
 $current_page = basename($_SERVER['PHP_SELF']);
 $base_url = (basename(getcwd()) === 'admin') ? '' : 'admin/';
 $logout_url = (basename(getcwd()) === 'admin') ? '../logout.php' : 'logout.php';
+$prediction_url = (basename(getcwd()) === 'admin') ? '../prediction.php' : 'prediction.php';
 ?>
 <!-- SIDEBAR -->
         <div class="col-md-3 col-lg-2 sidebar p-0">
@@ -15,5 +16,6 @@ $logout_url = (basename(getcwd()) === 'admin') ? '../logout.php' : 'logout.php';
             <a href="<?php echo $base_url; ?>year_wise_summary.php" class="<?php if($current_page == 'year_wise_summary.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Report</a>
             <a href="<?php echo $base_url; ?>manage_feedback.php" class="<?php if($current_page == 'manage_feedback.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Manage Feedback</a>
             <a href="<?php echo $base_url; ?>settings.php" class="<?php if($current_page == 'settings.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Change Password</a>
+            <a href="<?php echo $prediction_url; ?>" class="<?php if($current_page == 'prediction.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Prediction</a>
             <a href="<?php echo $logout_url; ?>">Logout</a>
         </div>

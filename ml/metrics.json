@@ -1,0 +1,30 @@
+{
+    "LR": {
+        "Accuracy": 0.7967,
+        "Precision": 0.7824,
+        "Recall": 0.9762,
+        "F1-Score": 0.8686,
+        "AUC": 0.8845
+    },
+    "DT": {
+        "Accuracy": 0.9082,
+        "Precision": 0.9505,
+        "Recall": 0.9143,
+        "F1-Score": 0.932,
+        "AUC": 0.9045
+    },
+    "RFC": {
+        "Accuracy": 0.918,
+        "Precision": 0.9426,
+        "Recall": 0.9381,
+        "F1-Score": 0.9403,
+        "AUC": 0.9576
+    },
+    "SVM": {
+        "Accuracy": 0.6098,
+        "Precision": 0.6655,
+        "Recall": 0.8714,
+        "F1-Score": 0.7546,
+        "AUC": 0.3668
+    }
+}
