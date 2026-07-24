@@ -73,5 +73,7 @@
             }
         });
     </script>
+    
+    <?php include_once 'chatbot_widget.php'; ?>
     </body>
 </html>

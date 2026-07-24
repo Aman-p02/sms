@@ -17,13 +17,12 @@
         .nav-link {
             position: relative;
             transition: all 0.3s ease;
-            color: rgba(255, 255, 255, 0.9) !important;
             padding: 8px 16px !important;
             border-radius: 8px;
         }
         .nav-link:hover, .nav-link.active {
-            color: #fff !important;
-            background-color: rgba(0, 0, 0, 0.2); /* Slightly dark background for the button */
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd !important;
         }
         .nav-link::after {
             content: '';
@@ -32,10 +31,10 @@
             height: 2px;
             bottom: 2px;
             left: 50%;
-            background-color: white;
+            background-color: #0d6efd;
             transition: all 0.3s ease;
             transform: translateX(-50%);
-            opacity: 0.8;
+            opacity: 1;
         }
         .nav-link:hover::after, .nav-link.active::after {
             width: 60%;

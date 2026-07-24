@@ -77,5 +77,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <a href="stu_changePassword.php" class="<?php if($current_page == 'stu_changePassword.php') echo 'active'; ?>">Change Password</a>
             <a href="stu_feedback.php" class="<?php if($current_page == 'stu_feedback.php') echo 'active'; ?>">Feedback</a>
             <?php }?>
-            <a href="logout.php">Logout</a>
+            <a href="logout.php">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
         </div>
+        
+        <?php 
+        // Ensure Chatbot is loaded on all student pages
+        $chatbot_path = $_SERVER['DOCUMENT_ROOT'] . '/SMS/chatbot_widget.php';
+        if(file_exists($chatbot_path)) {
+            include_once $chatbot_path; 
+        }
+        ?>

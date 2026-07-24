@@ -37,3 +37,11 @@ $cluster_url = '/SMS/cluster.php';
             <a href="<?php echo $cluster_url; ?>" class="<?php if($current_page == 'cluster.php') echo 'active bg-primary text-white border-start border-4 border-info'; ?>">Clustering Analysis</a>
             <a href="<?php echo $logout_url; ?>">Logout</a>
         </div>
+        
+        <?php 
+        // Ensure Chatbot is loaded on all admin pages
+        $chatbot_path = $_SERVER['DOCUMENT_ROOT'] . '/SMS/chatbot_widget.php';
+        if(file_exists($chatbot_path)) {
+            include_once $chatbot_path; 
+        }
+        ?>
